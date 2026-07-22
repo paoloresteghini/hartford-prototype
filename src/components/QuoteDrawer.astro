@@ -1,0 +1,113 @@
+---
+import { SITE } from '../data/catalog.js';
+---
+
+<div class="fixed inset-0 z-[60]" hidden data-drawer-root>
+  <div class="drawer-backdrop absolute inset-0 bg-ink/60 backdrop-blur-sm" data-drawer-close></div>
+
+  <aside
+    class="drawer-panel absolute inset-y-0 right-0 flex w-[min(28rem,94vw)] flex-col bg-bg text-ink shadow-2xl"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Quote list"
+  >
+    <header class="flex items-center justify-between border-b border-line px-6 py-5">
+      <div class="flex items-center gap-3">
+        <span class="tally" aria-hidden="true"></span>
+        <h2 class="display-sub text-base">Quote List</h2>
+        <span class="mono-label text-ink-3" data-drawer-count>0 items</span>
+      </div>
+      <button type="button" class="p-2 transition-colors hover:text-signal" aria-label="Close quote list" data-drawer-close>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </header>
+
+    <!-- items -->
+    <div class="flex-1 overflow-y-auto px-6" data-drawer-body>
+      <div class="py-16 text-center" data-drawer-empty>
+        <p class="display-sub text-sm text-ink-3">Your quote list is empty</p>
+        <p class="mx-auto mt-3 max-w-[26ch] text-sm leading-relaxed text-ink-3">
+          Browse the fleet and add gear — we respond to every request the same business day.
+        </p>
+        <a href="/camera-rental/" class="mt-6 inline-block border border-ink px-5 py-2.5 text-sm font-medium transition-colors hover:bg-ink hover:text-bg">
+          Browse camera rentals
+        </a>
+      </div>
+      <ul class="divide-y divide-line" data-drawer-items></ul>
+    </div>
+
+    <!-- request form -->
+    <form class="hidden border-t border-line px-6 py-5" data-quote-form novalidate>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="col-span-1 block">
+          <span class="mono-label text-ink-3">Name</span>
+          <input required type="text" name="name" autocomplete="name" class="mt-1 w-full border border-line bg-bg px-3 py-2 text-sm focus:border-ink" />
+        </label>
+        <label class="col-span-1 block">
+          <span class="mono-label text-ink-3">Company</span>
+          <input required type="text" name="company" autocomplete="organization" class="mt-1 w-full border border-line bg-bg px-3 py-2 text-sm focus:border-ink" />
+        </label>
+        <label class="col-span-2 block">
+          <span class="mono-label text-ink-3">Work email</span>
+          <input required type="email" name="email" autocomplete="email" class="mt-1 w-full border border-line bg-bg px-3 py-2 text-sm focus:border-ink" />
+        </label>
+        <label class="col-span-1 block">
+          <span class="mono-label text-ink-3">Delivery date</span>
+          <input type="date" name="start" class="mt-1 w-full border border-line bg-bg px-3 py-2 text-sm focus:border-ink" />
+        </label>
+        <label class="col-span-1 block">
+          <span class="mono-label text-ink-3">Return date</span>
+          <input type="date" name="end" class="mt-1 w-full border border-line bg-bg px-3 py-2 text-sm focus:border-ink" />
+        </label>
+      </div>
+      <button type="submit" class="mt-4 w-full bg-ink py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong">
+        Send quote request
+      </button>
+      <p class="mt-3 text-center text-xs text-ink-3">Same-day response · {SITE.phone} for urgent requests</p>
+    </form>
+
+    <!-- success -->
+    <div class="hidden border-t border-line px-6 py-10 text-center" data-quote-success>
+      <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-ink">
+        <svg class="h-5 w-5 text-bg" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>
+      </span>
+      <p class="display-sub mt-5 text-base">Request received</p>
+      <p class="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-ink-3">
+        A rental specialist will reply with availability and pricing today.
+      </p>
+    </div>
+
+    <!-- footer CTA (pre-form state) -->
+    <footer class="border-t border-line px-6 py-5" data-drawer-footer>
+      <button type="button" class="w-full bg-ink py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong disabled:opacity-40" data-quote-start disabled>
+        Request quote
+      </button>
+    </footer>
+  </aside>
+</div>
+
+<!-- toast -->
+<div class="pointer-events-none fixed bottom-6 left-1/2 z-[70] -translate-x-1/2" aria-live="polite">
+  <div class="toast flex items-center gap-3 bg-ink px-5 py-3 text-sm text-bg shadow-xl" data-toast>
+    <span class="tally" aria-hidden="true"></span>
+    <span data-toast-text>Added to quote list</span>
+  </div>
+</div>
+
+<template data-drawer-item-template>
+  <li class="flex gap-4 py-4">
+    <img class="h-16 w-16 flex-none border border-line bg-white object-contain p-1" alt="" data-item-img />
+    <div class="min-w-0 flex-1">
+      <p class="mono-label text-ink-3" data-item-sku></p>
+      <p class="truncate text-sm font-medium" data-item-name></p>
+      <div class="mt-2 flex items-center gap-3">
+        <div class="flex items-center border border-line">
+          <button type="button" class="px-2.5 py-1 text-sm hover:bg-surface" data-item-dec aria-label="Decrease quantity">−</button>
+          <span class="min-w-8 text-center font-mono text-sm" data-item-qty>1</span>
+          <button type="button" class="px-2.5 py-1 text-sm hover:bg-surface" data-item-inc aria-label="Increase quantity">+</button>
+        </div>
+        <button type="button" class="mono-label text-ink-3 transition-colors hover:text-signal" data-item-remove>Remove</button>
+      </div>
+    </div>
+  </li>
+</template>

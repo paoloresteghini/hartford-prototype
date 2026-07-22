@@ -1,0 +1,46 @@
+---
+const { product, eager = false } = Astro.props;
+const Tag = product.href && product.href !== '#' ? 'a' : 'span';
+---
+
+<article class="product-card group relative flex h-full flex-col border border-line bg-bg" data-type={product.type}>
+  <Tag href={product.href !== '#' ? product.href : undefined} class="relative block overflow-hidden bg-white">
+    <img
+      src={product.img}
+      alt={`${product.brand} ${product.name} rental unit`}
+      class="card-img aspect-square w-full object-contain p-6"
+      loading={eager ? 'eager' : 'lazy'}
+      width="400"
+      height="400"
+    />
+    {product.featured && (
+      <span class="absolute left-3 top-3 flex items-center gap-1.5 bg-ink px-2 py-1">
+        <span class="tally !h-1.5 !w-1.5" aria-hidden="true"></span>
+        <span class="mono-label !text-[0.625rem] text-bg">Flagship</span>
+      </span>
+    )}
+  </Tag>
+  <div class="flex flex-1 flex-col border-t border-line p-4">
+    <p class="mono-label text-ink-3">{product.typeLabel}</p>
+    <h3 class="mt-1.5 text-[0.9375rem] font-semibold leading-snug">
+      {product.href !== '#' ? (
+        <a href={product.href} class="after:absolute after:inset-0">{product.brand} {product.name}</a>
+      ) : (
+        <span>{product.brand} {product.name}</span>
+      )}
+    </h3>
+    <p class="mt-1 text-sm leading-snug text-ink-3">{product.blurb}</p>
+  </div>
+  <div class="overflow-hidden">
+    <button
+      type="button"
+      class="card-cta relative z-10 w-full border-t border-line bg-ink py-3 text-sm font-medium text-bg transition-colors hover:bg-signal-strong"
+      data-add-quote
+      data-sku={product.sku}
+      data-name={`${product.brand} ${product.name}`}
+      data-img={product.img}
+    >
+      Add to quote
+    </button>
+  </div>
+</article>

@@ -1,0 +1,237 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { SITE, UC4000, CAMERA_PRODUCTS } from '../../data/catalog.js';
+
+const related = UC4000.related
+  .map((sku) => CAMERA_PRODUCTS.find((p) => p.sku === sku))
+  .filter(Boolean);
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  '@id': `${SITE.url}${UC4000.href}#product`,
+  name: `${UC4000.name} 4K Studio Camera Rental`,
+  image: `${SITE.url}${UC4000.img}`,
+  description: UC4000.description,
+  brand: { '@type': 'Brand', name: UC4000.brand },
+  sku: UC4000.sku,
+  mpn: UC4000.sku,
+  category: 'Studio Camera Rentals',
+  url: `${SITE.url}${UC4000.href}`,
+  additionalProperty: UC4000.specs.map(([name, value]) => ({
+    '@type': 'PropertyValue',
+    name,
+    value,
+  })),
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    priceSpecification: { '@type': 'PriceSpecification', description: 'Quoted per rental — daily, weekly and monthly rates' },
+    businessFunction: 'http://purl.org/goodrelations/v1#LeaseOut',
+    seller: { '@id': `${SITE.url}/#organization` },
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Audio Visual Rentals', item: `${SITE.url}/rent-audio-visual-gear/` },
+    { '@type': 'ListItem', position: 3, name: 'Camera Rentals', item: `${SITE.url}/camera-rental/` },
+    { '@type': 'ListItem', position: 4, name: 'Panasonic AK-UC4000', item: `${SITE.url}${UC4000.href}` },
+  ],
+};
+---
+
+<Base
+  title="Panasonic AK-UC4000 4K Studio Camera Rental | Hartford Technology Rentals"
+  description="Rent the Panasonic AK-UC4000 4K HDR studio camera — full broadcast chain with Fujinon 20× lens, viewfinder, CCU and Sachtler tripod. Prepped, QC'd and shipped nationwide. Same-day quotes for businesses."
+  schema={[productSchema, breadcrumbSchema]}
+  ogImage={UC4000.img}
+>
+  <!-- ============ BREADCRUMB ============ -->
+  <div class="mx-auto max-w-[1440px] px-5 pt-8 lg:px-10">
+    <nav aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
+        <li><a href="/" class="link-draw hover:text-ink">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="#" class="link-draw hover:text-ink">Audio Visual</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/camera-rental/" class="link-draw hover:text-ink">Camera Rentals</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-ink">AK-UC4000</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- ============ PRODUCT ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 pb-16 pt-8 lg:px-10">
+    <div class="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+      <!-- gallery -->
+      <div>
+        <div class="relative overflow-hidden border border-line bg-white">
+          <img
+            src={UC4000.img}
+            alt="Panasonic AK-UC4000 4K studio camera with Fujinon 20× zoom lens and external viewfinder"
+            class="aspect-[4/3] w-full object-contain p-10 lg:p-16"
+            fetchpriority="high"
+            width="900"
+            height="675"
+          />
+          <p class="mono-label absolute left-4 top-4 flex items-center gap-2 bg-ink px-2.5 py-1.5 text-bg">
+            <span class="tally !h-1.5 !w-1.5" aria-hidden="true"></span>
+            Fleet unit — QC’d before every rental
+          </p>
+        </div>
+        <div class="mt-4 grid grid-cols-3 gap-4">
+          <div class="border border-line bg-surface/50 p-4">
+            <p class="font-mono text-lg font-medium">4.4K</p>
+            <p class="mono-label mt-1 text-ink-3">Large sensor</p>
+          </div>
+          <div class="border border-line bg-surface/50 p-4">
+            <p class="font-mono text-lg font-medium">12G-SDI</p>
+            <p class="mono-label mt-1 text-ink-3">Uncompressed out</p>
+          </div>
+          <div class="border border-line bg-surface/50 p-4">
+            <p class="font-mono text-lg font-medium">4× HD</p>
+            <p class="mono-label mt-1 text-ink-3">Slow motion</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- summary / quote panel -->
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <p class="mono-label text-ink-3">{UC4000.brand} · Studio · 4K HDR</p>
+        <h1 class="display mt-3 text-[clamp(2rem,4.5vw,3.25rem)]">AK-UC4000</h1>
+        <p class="mt-2 text-lg font-medium text-ink-2">{UC4000.tagline}</p>
+
+        <p class="mt-6 max-w-[52ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          Panasonic’s flagship studio camera for broadcast and large-venue production.
+          Ships as a complete, tested chain — glass to CCU — so your crew cables up and shoots.
+        </p>
+
+        <div class="mt-8 border border-line">
+          <div class="flex items-center justify-between border-b border-line px-5 py-4">
+            <p class="text-sm font-semibold">Rental quote</p>
+            <p class="mono-label flex items-center gap-2 text-ink-3">
+              <span class="tally" aria-hidden="true"></span>
+              Available — same-day response
+            </p>
+          </div>
+          <div class="flex items-stretch gap-3 px-5 py-5">
+            <label class="flex items-center border border-line">
+              <span class="sr-only">Quantity</span>
+              <input
+                type="number"
+                min="1"
+                value="1"
+                data-qty-input
+                class="w-16 bg-bg px-3 py-3 text-center font-mono text-sm focus:outline-none"
+              />
+            </label>
+            <button
+              type="button"
+              class="flex-1 bg-ink text-sm font-semibold text-bg transition-colors hover:bg-signal-strong"
+              data-add-quote
+              data-use-qty
+              data-sku={UC4000.sku}
+              data-name={`${UC4000.brand} ${UC4000.sku} Studio Camera`}
+              data-img={UC4000.img}
+            >
+              Add to quote list
+            </button>
+          </div>
+          <p class="border-t border-line px-5 py-3.5 text-xs leading-relaxed text-ink-3">
+            No pricing online — every job is quoted individually with daily, weekly and monthly rates.
+            Urgent? <a href={SITE.phoneHref} class="link-draw font-medium text-ink">{SITE.phone}</a>, 24/7.
+          </p>
+        </div>
+
+        <div class="mt-8">
+          <p class="display-sub text-sm">In the kit</p>
+          <ul class="mt-4 space-y-2.5">
+            {UC4000.kit.map((item) => (
+              <li class="flex items-start gap-3 text-[0.9375rem] text-ink-2">
+                <svg class="mt-1 h-3.5 w-3.5 flex-none text-signal" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" />
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="mt-8 grid grid-cols-3 divide-x divide-line border border-line text-center">
+          <div class="px-2 py-3.5"><p class="mono-label text-ink-3">Overnight</p><p class="mt-1 text-xs font-medium">Ship both ways</p></div>
+          <div class="px-2 py-3.5"><p class="mono-label text-ink-3">Local pickup</p><p class="mt-1 text-xs font-medium">LV · CHI · ORL</p></div>
+          <div class="px-2 py-3.5"><p class="mono-label text-ink-3">Support</p><p class="mt-1 text-xs font-medium">24/7 technicians</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DESCRIPTION + SPECS ============ -->
+  <section class="border-y border-line bg-surface/60">
+    <div class="mx-auto grid max-w-[1440px] gap-12 px-5 py-16 lg:grid-cols-[1fr_1.3fr] lg:gap-20 lg:px-10 lg:py-24">
+      <div class="reveal">
+        <h2 class="display text-[clamp(1.5rem,3vw,2.25rem)]">Built for broadcast &amp; live events</h2>
+        <p class="mt-6 max-w-[58ch] text-[0.9375rem] leading-relaxed text-ink-2">{UC4000.description}</p>
+        <p class="mt-4 max-w-[58ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          Need multi-camera? Pair it with our PTZ fleet and AW-RP150 control surface for a
+          hybrid studio build — one quote, one truck, one support line.
+        </p>
+        <p class="mt-4 max-w-[58ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          Rent this 4K video camera by the day, week or month at the best rates on
+          professional broadcast gear — with local pickup in Las Vegas, Chicago and Orlando,
+          or overnight shipping nationwide, both ways.
+        </p>
+        <a href="/camera-rental/" class="link-draw mt-8 inline-block text-sm font-semibold">Browse the full camera fleet →</a>
+      </div>
+      <div class="reveal">
+        <h2 class="display-sub text-sm">Technical specifications</h2>
+        <dl class="mt-5 border-t border-line">
+          {UC4000.specs.map(([name, value]) => (
+            <div class="grid grid-cols-[minmax(120px,0.7fr)_1fr] gap-4 border-b border-line py-3.5">
+              <dt class="mono-label pt-0.5 text-ink-3">{name}</dt>
+              <dd class="font-mono text-sm text-ink">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="mt-4 text-xs text-ink-3">Full spec sheet and firmware details available with your quote.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RELATED ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
+    <div class="reveal flex flex-wrap items-end justify-between gap-4">
+      <h2 class="display text-[clamp(1.5rem,3vw,2.25rem)]">Completes the package</h2>
+      <p class="max-w-[40ch] text-sm leading-relaxed text-ink-3">
+        Gear most often quoted alongside the AK-UC4000 for studio and general-session builds.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {related.map((p) => (
+        <ProductCard product={p} />
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="border-t border-line bg-ink text-bg">
+    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
+      <div>
+        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Panasonic Pro trained QC staff</p>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Put it on your quote</h2>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href={SITE.phoneHref} class="font-mono text-lg link-draw">{SITE.phone}</a>
+        <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+          Review quote list
+        </button>
+      </div>
+    </div>
+  </section>
+</Base>

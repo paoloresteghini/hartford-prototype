@@ -1,0 +1,66 @@
+---
+import { NAV, SITE } from '../data/catalog.js';
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-paper-darker text-bg">
+  <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-20">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div>
+        <a href="/" class="flex items-baseline gap-2.5">
+          <span class="display text-2xl">Hartford</span>
+          <span class="tally relative -top-px" aria-hidden="true"></span>
+        </a>
+        <p class="mono-label mt-2 text-muted-dark">Technology Rentals</p>
+        <p class="mt-6 max-w-xs text-[0.9375rem] leading-relaxed text-muted-dark">
+          Broadcast-grade AV and computing rentals for corporations and school districts.
+          Three depots, nationwide overnight delivery, 24/7 technical support.
+        </p>
+        <a href={SITE.phoneHref} class="mt-6 inline-block font-mono text-xl text-bg link-draw">{SITE.phone}</a>
+      </div>
+
+      {NAV.map((division) => (
+        <nav aria-label={`${division.label} rentals`}>
+          <p class="display-sub mb-5 text-sm text-bg">{division.label}</p>
+          <ul class="space-y-2.5">
+            {division.categories.map((cat) => (
+              <li>
+                <a href={cat.slug} class="link-draw text-[0.9375rem] text-muted-dark transition-colors hover:text-bg">
+                  {cat.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+
+      <div>
+        <p class="display-sub mb-5 text-sm text-bg">Depots</p>
+        <ul class="space-y-5 font-mono text-sm text-muted-dark">
+          <li>
+            <p class="text-bg">Las Vegas — HQ</p>
+            <p class="mt-1">6445 Montessouri St, NV 89113</p>
+          </li>
+          <li>
+            <p class="text-bg">Chicago</p>
+            <p class="mt-1">3255 N Arlington Heights Rd, IL 60004</p>
+          </li>
+          <li>
+            <p class="text-bg">Orlando</p>
+            <p class="mt-1">1801 Cypress Lake Dr, FL 32837</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-4 border-t border-line-dark/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <p class="mono-label text-muted-dark">© {year} {SITE.legal}. Business &amp; education rentals only.</p>
+      <div class="flex gap-6">
+        <a href="#" class="mono-label link-draw text-muted-dark hover:text-bg">Careers</a>
+        <a href="#" class="mono-label link-draw text-muted-dark hover:text-bg">Partners</a>
+        <a href="#" class="mono-label link-draw text-muted-dark hover:text-bg">Scholarship</a>
+        <a href="#" class="mono-label link-draw text-muted-dark hover:text-bg">Blog</a>
+      </div>
+    </div>
+  </div>
+</footer>

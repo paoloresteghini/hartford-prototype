@@ -1,0 +1,297 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { NAV, SITE, CAMERA_PRODUCTS, CLIENTS } from '../data/catalog.js';
+
+const featured = [
+  CAMERA_PRODUCTS.find((p) => p.sku === 'AK-UC4000'),
+  CAMERA_PRODUCTS.find((p) => p.sku === 'AW-UE160'),
+  {
+    sku: 'P3.91-TILE', brand: 'HTR', name: 'P3.91 LED Video Wall Tile', type: 'led',
+    typeLabel: 'LED Wall · P3.91', img: '/img/ledtile.jpg', href: '#',
+    blurb: 'Seamless indoor wall builds, any size',
+  },
+  {
+    sku: 'PEARL-MINI', brand: 'Epiphan', name: 'Pearl Mini Live Production', type: 'video',
+    typeLabel: 'Streaming · Switcher', img: '/img/pearl-mini.jpg', href: '#',
+    blurb: 'All-in-one capture, switch & stream',
+  },
+  CAMERA_PRODUCTS.find((p) => p.sku === 'AG-CX350'),
+  {
+    sku: 'SHOGUN-STUDIO', brand: 'Atomos', name: 'Shogun Studio Recorder', type: 'video',
+    typeLabel: 'Recording · 4K', img: '/img/shogun.jpg', href: '#',
+    blurb: 'Rack-mount 4K monitor-recorder',
+  },
+  CAMERA_PRODUCTS.find((p) => p.sku === 'AW-RP150'),
+  CAMERA_PRODUCTS.find((p) => p.sku === 'UA46X9'),
+];
+
+const steps = [
+  {
+    n: '01',
+    title: 'Build your quote list',
+    body: 'Browse the fleet by category and add gear — no prices, no checkout. Your list travels with you across the site.',
+  },
+  {
+    n: '02',
+    title: 'Same-day quote',
+    body: 'A rental specialist confirms availability and returns pricing the same business day. Adjust and confirm when ready.',
+  },
+  {
+    n: '03',
+    title: 'Delivered & supported',
+    body: 'Gear arrives prepped, labeled and QC’d — with on-site technicians and 24/7 support for the length of your event.',
+  },
+];
+---
+
+<Base
+  title="Hartford Technology Rentals | AV & Computer Rentals for Business Events Nationwide"
+  description="Broadcast-grade audio visual and computing rentals for corporations and school districts. Cameras, LED walls, laptops and event tech — prepped, delivered and supported nationwide from Las Vegas, Chicago and Orlando."
+>
+  <!-- ============ HERO ============ -->
+  <section class="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-ink text-bg">
+    <img
+      src="/img/hero-home.jpg"
+      alt="Audience in a darkened general session hall lit by stage light"
+      class="hero-media absolute inset-0 h-full w-full object-cover opacity-60"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/20 lg:via-ink/40" aria-hidden="true"></div>
+
+    <div class="relative mx-auto w-full max-w-[1440px] px-5 pb-10 pt-40 lg:px-10">
+      <div class="hero-fade mb-6 flex items-center justify-between gap-4">
+        <p class="mono-label flex items-center gap-3 text-muted-dark">
+          <span class="tally" aria-hidden="true"></span>
+          Now quoting — same-day response
+        </p>
+        <p class="mono-label hidden text-muted-dark sm:block" aria-hidden="true">
+          REC <span data-timecode>00:00:00:00</span>
+        </p>
+      </div>
+      <h1 class="display text-[clamp(2.75rem,8vw,6rem)]">
+        <span class="block overflow-hidden"><span class="hero-line block">The gear</span></span>
+        <span class="block overflow-hidden"><span class="hero-line block">behind the show</span></span>
+      </h1>
+      <div class="mt-8 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <p class="hero-fade max-w-[46ch] text-base leading-relaxed text-muted-dark md:text-lg">
+          Broadcast cameras, LED walls, laptops by the pallet. Prepped, delivered and
+          supported nationwide for corporate events and school districts — since day one, business rentals only.
+        </p>
+        <div class="hero-fade flex flex-none gap-3">
+          <a href="/camera-rental/" class="bg-bg px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white">
+            Browse the fleet
+          </a>
+          <button type="button" class="border border-line-dark px-6 py-3.5 text-sm font-semibold transition-colors hover:border-bg" data-drawer-open>
+            Request a quote
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-fade mt-12 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line-dark/60 pt-5 sm:flex sm:items-center sm:justify-between">
+        <p class="mono-label text-muted-dark">10,000+ events supplied</p>
+        <p class="mono-label text-muted-dark">3 depots · nationwide overnight</p>
+        <p class="mono-label text-muted-dark">96% repeat clients</p>
+        <p class="mono-label text-muted-dark">24/7 technical support</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLEET DIRECTORY ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 py-20 lg:px-10 lg:py-28">
+    <div class="reveal flex flex-wrap items-end justify-between gap-6">
+      <h2 class="display text-[clamp(2rem,4.5vw,3.5rem)]">Browse the fleet</h2>
+      <p class="max-w-[38ch] text-[0.9375rem] leading-relaxed text-ink-3">
+        Two divisions, one truck. Most clients rent across both — one quote covers everything.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-16 lg:grid-cols-2 lg:gap-10">
+      {NAV.map((division) => (
+        <div class="reveal directory relative">
+          <p class="display-sub border-b-2 border-ink pb-3 text-sm">{division.label}</p>
+          <ul>
+            {division.categories.map((cat) => (
+              <li class="dir-row group relative border-b border-line">
+                <a
+                  href={cat.slug}
+                  class="flex items-baseline justify-between gap-4 py-4 transition-colors duration-200 group-hover:pl-3"
+                >
+                  <span class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <span class="text-lg font-semibold transition-colors group-hover:text-signal-strong lg:text-xl">{cat.name}</span>
+                    <span class="mono-label hidden text-ink-3 sm:inline">{cat.blurb}</span>
+                  </span>
+                  <svg class="h-4 w-4 flex-none text-ink-3 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-signal-strong" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M2 8h11M8.5 3.5L13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" />
+                  </svg>
+                </a>
+                {cat.img && (
+                  <img src={cat.img} alt="" class="dir-img" loading="lazy" aria-hidden="true" />
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ FEATURED RAIL ============ -->
+  <section class="border-y border-line bg-surface/60">
+    <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-20">
+      <div class="reveal flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="mono-label mb-2 flex items-center gap-2 text-ink-3"><span class="tally" aria-hidden="true"></span>On the truck this week</p>
+          <h2 class="display text-[clamp(1.75rem,3.5vw,2.75rem)]">Frequently quoted gear</h2>
+        </div>
+        <a href="/camera-rental/" class="link-draw text-sm font-medium">All camera rentals →</a>
+      </div>
+
+      <div class="scroll-rail -mx-5 mt-10 flex snap-x gap-4 overflow-x-auto px-5 pb-4 lg:-mx-10 lg:px-10">
+        {featured.map((p) => (
+          <div class="w-[270px] flex-none snap-start">
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="bg-paper-dark text-bg">
+    <div class="mx-auto max-w-[1440px] px-5 py-20 lg:px-10 lg:py-28">
+      <div class="reveal max-w-2xl">
+        <h2 class="display text-[clamp(2rem,4.5vw,3.5rem)]">No prices. No carts. A quote list.</h2>
+        <p class="mt-5 text-base leading-relaxed text-muted-dark">
+          Every event is different, so we price every job individually — and respond the same business day.
+        </p>
+      </div>
+      <ol class="mt-14 grid gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 md:grid-cols-3">
+        {steps.map((step) => (
+          <li class="reveal bg-paper-dark p-8 lg:p-10">
+            <p class="font-mono text-sm text-signal">{step.n}</p>
+            <h3 class="display-sub mt-4 text-lg">{step.title}</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted-dark">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ TRUST ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 py-20 lg:px-10 lg:py-28">
+    <figure class="reveal mx-auto max-w-4xl text-center">
+      <blockquote class="text-[clamp(1.375rem,3vw,2.125rem)] font-medium leading-snug text-ink">
+        “The gear shows up prepped, labeled and on time — every time.
+        Nine national sales meetings running, Hartford is the one vendor we never think about.”
+      </blockquote>
+      <figcaption class="mono-label mt-6 text-ink-3">Event production lead · Global consulting firm</figcaption>
+    </figure>
+    <ul class="reveal mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 border-t border-line pt-10" role="list" aria-label="Selected clients">
+      {CLIENTS.map((c) => (
+        <li class="display-sub text-sm text-ink-3">{c}</li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ============ EVENT SOLUTIONS ============ -->
+  <section class="border-t border-line">
+    <div class="mx-auto grid max-w-[1440px] items-stretch lg:grid-cols-2">
+      <div class="reveal-img relative min-h-[320px] overflow-hidden lg:min-h-[560px]">
+        <img
+          src="/img/event-solutions.jpg"
+          alt="Presenter on stage beside a large projection screen at a corporate general session"
+          class="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div class="reveal flex flex-col justify-center px-5 py-16 lg:px-16 lg:py-24">
+        <h2 class="display text-[clamp(1.75rem,3.5vw,2.75rem)]">More than gear on a truck</h2>
+        <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-ink-2">
+          General sessions, breakout rooms, registration and exhibit halls — our event team
+          designs, delivers and runs the technology for conventions of every size, with
+          on-site technicians from load-in to strike.
+        </p>
+        <ul class="mt-8 grid max-w-md grid-cols-2 gap-x-8 gap-y-3">
+          {['General sessions', 'Breakout rooms', 'Event registration', 'Exhibit halls', 'Live streaming', 'On-site technicians'].map((item) => (
+            <li class="flex items-center gap-2.5 text-[0.9375rem] text-ink-2">
+              <span class="h-1 w-1 flex-none bg-signal" aria-hidden="true"></span>
+              {item}
+            </li>
+          ))}
+        </ul>
+        <a href="#" class="link-draw mt-10 w-fit text-sm font-semibold">Explore event solutions →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEO CONTENT ============ -->
+  <section class="border-t border-line bg-surface/60">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 py-14 lg:grid-cols-2 lg:gap-20 lg:px-10">
+      <div class="reveal">
+        <h2 class="display-sub text-lg">Audio visual &amp; computer rentals, nationwide</h2>
+        <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          Hartford Technology Rentals delivers the best rental rates on professional audio
+          visual gear and business computing — from broadcast camera rentals and LED video
+          walls to laptop, tablet and event printer fleets. Local pickup in Las Vegas,
+          Chicago and Orlando; overnight delivery to conferences, conventions and campuses
+          across the United States.
+        </p>
+      </div>
+      <div class="reveal">
+        <h2 class="display-sub text-lg">Built for business events</h2>
+        <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          From a single hybrid meeting kit to a 5,000-seat general session, we rent
+          exclusively to corporations, government agencies and school districts — with
+          same-day quotes, daily, weekly and monthly rates, and 24/7 technical support on
+          every rental.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="border-t border-line bg-ink text-bg">
+    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10 lg:py-20">
+      <div>
+        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Quotes answered same business day</p>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Ready to spec your event?</h2>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href={SITE.phoneHref} class="font-mono text-lg link-draw">{SITE.phone}</a>
+        <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+          Start a quote list
+        </button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* directory hover preview image */
+  .dir-img {
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    z-index: 20;
+    width: 190px;
+    height: 130px;
+    object-fit: cover;
+    transform: translateY(-50%) scale(0.96) rotate(-1.5deg);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 20px 40px -12px oklch(0.18 0.005 260 / 0.35);
+    transition: opacity 0.25s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+  }
+  @media (hover: hover) and (min-width: 1024px) {
+    .dir-row:hover .dir-img {
+      opacity: 1;
+      transform: translateY(-50%) scale(1) rotate(0deg);
+    }
+  }
+
+  .scroll-rail {
+    scrollbar-width: none;
+  }
+  .scroll-rail::-webkit-scrollbar { display: none; }
+</style>
