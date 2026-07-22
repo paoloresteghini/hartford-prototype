@@ -1,25 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProductCard from '../components/ProductCard.astro';
-import { NAV, SITE, CAMERA_PRODUCTS, CLIENTS } from '../data/catalog.js';
+import { NAV, SITE, CAMERA_PRODUCTS, CLIENTS, u } from '../data/catalog.js';
 
 const featured = [
   CAMERA_PRODUCTS.find((p) => p.sku === 'AK-UC4000'),
   CAMERA_PRODUCTS.find((p) => p.sku === 'AW-UE160'),
   {
     sku: 'P3.91-TILE', brand: 'HTR', name: 'P3.91 LED Video Wall Tile', type: 'led',
-    typeLabel: 'LED Wall · P3.91', img: '/img/ledtile.jpg', href: '#',
+    typeLabel: 'LED Wall · P3.91', img: u('/img/ledtile.jpg'), href: '#',
     blurb: 'Seamless indoor wall builds, any size',
   },
   {
     sku: 'PEARL-MINI', brand: 'Epiphan', name: 'Pearl Mini Live Production', type: 'video',
-    typeLabel: 'Streaming · Switcher', img: '/img/pearl-mini.jpg', href: '#',
+    typeLabel: 'Streaming · Switcher', img: u('/img/pearl-mini.jpg'), href: '#',
     blurb: 'All-in-one capture, switch & stream',
   },
   CAMERA_PRODUCTS.find((p) => p.sku === 'AG-CX350'),
   {
     sku: 'SHOGUN-STUDIO', brand: 'Atomos', name: 'Shogun Studio Recorder', type: 'video',
-    typeLabel: 'Recording · 4K', img: '/img/shogun.jpg', href: '#',
+    typeLabel: 'Recording · 4K', img: u('/img/shogun.jpg'), href: '#',
     blurb: 'Rack-mount 4K monitor-recorder',
   },
   CAMERA_PRODUCTS.find((p) => p.sku === 'AW-RP150'),
@@ -52,7 +52,7 @@ const steps = [
   <!-- ============ HERO ============ -->
   <section class="relative flex min-h-[92svh] flex-col justify-end overflow-hidden bg-ink text-bg">
     <img
-      src="/img/hero-home.jpg"
+      src={u('/img/hero-home.jpg')}
       alt="Audience in a darkened general session hall lit by stage light"
       class="hero-media absolute inset-0 h-full w-full object-cover opacity-60"
       fetchpriority="high"
@@ -79,7 +79,7 @@ const steps = [
           supported nationwide for corporate events and school districts — since day one, business rentals only.
         </p>
         <div class="hero-fade flex flex-none gap-3">
-          <a href="/camera-rental/" class="bg-bg px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white">
+          <a href={u('/camera-rental/')} class="bg-bg px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white">
             Browse the fleet
           </a>
           <button type="button" class="border border-line-dark px-6 py-3.5 text-sm font-semibold transition-colors hover:border-bg" data-drawer-open>
@@ -144,7 +144,7 @@ const steps = [
           <p class="mono-label mb-2 flex items-center gap-2 text-ink-3"><span class="tally" aria-hidden="true"></span>On the truck this week</p>
           <h2 class="display text-[clamp(1.75rem,3.5vw,2.75rem)]">Frequently quoted gear</h2>
         </div>
-        <a href="/camera-rental/" class="link-draw text-sm font-medium">All camera rentals →</a>
+        <a href={u('/camera-rental/')} class="link-draw text-sm font-medium">All camera rentals →</a>
       </div>
 
       <div class="scroll-rail -mx-5 mt-10 flex snap-x gap-4 overflow-x-auto px-5 pb-4 lg:-mx-10 lg:px-10">
@@ -199,7 +199,7 @@ const steps = [
     <div class="mx-auto grid max-w-[1440px] items-stretch lg:grid-cols-2">
       <div class="reveal-img relative min-h-[320px] overflow-hidden lg:min-h-[560px]">
         <img
-          src="/img/event-solutions.jpg"
+          src={u('/img/event-solutions.jpg')}
           alt="Presenter on stage beside a large projection screen at a corporate general session"
           class="absolute inset-0 h-full w-full object-cover"
           loading="lazy"

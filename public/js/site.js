@@ -385,7 +385,7 @@
     const addRow = (hit, tokens, isTop) => {
       const li = document.createElement('li');
       const a = document.createElement('a');
-      a.href = hit.href && hit.href !== '#' ? hit.href : '/camera-rental/';
+      a.href = hit.href && hit.href !== '#' ? hit.href : (document.body.dataset.base || '/') + 'camera-rental/';
       a.className = 'search-row flex items-center justify-between gap-4 px-2 py-3 transition-colors hover:bg-surface';
       const left = document.createElement('span');
       left.className = 'flex items-center gap-4 min-w-0';

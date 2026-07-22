@@ -1,5 +1,5 @@
 ---
-import { NAV, SITE, CAMERA_PRODUCTS } from '../data/catalog.js';
+import { NAV, SITE, CAMERA_PRODUCTS, u } from '../data/catalog.js';
 
 // Client-side search index: categories, subcategories, products
 const searchIndex = [
@@ -37,7 +37,7 @@ const searchIndex = [
   <!-- main bar -->
   <div class="relative">
     <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-5 py-4 lg:px-10">
-      <a href="/" class="group flex items-baseline gap-2.5" aria-label="Hartford Technology Rentals — home">
+      <a href={u('/')} class="group flex items-baseline gap-2.5" aria-label="Hartford Technology Rentals — home">
         <span class="display text-[1.35rem] leading-none tracking-tight">Hartford</span>
         <span class="tally relative -top-px" aria-hidden="true"></span>
       </a>
@@ -207,7 +207,7 @@ const searchIndex = [
   <div class="drawer-backdrop absolute inset-0 bg-ink/60 backdrop-blur-sm" data-sheet-close></div>
   <div class="sheet absolute inset-y-0 left-0 flex w-[min(24rem,88vw)] flex-col overflow-y-auto bg-bg text-ink shadow-2xl">
     <div class="flex items-center justify-between border-b border-line px-5 py-4">
-      <span class="display text-lg">Hartford</span>
+      <a href={u('/')} class="display text-lg">Hartford</a>
       <button type="button" class="p-2" aria-label="Close menu" data-sheet-close>
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5"/></svg>
       </button>

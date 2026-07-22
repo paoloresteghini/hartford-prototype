@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuoteDrawer from '../components/QuoteDrawer.astro';
-import { SITE } from '../data/catalog.js';
+import { SITE, BASE, u } from '../data/catalog.js';
 
 const { title, description, schema = [], ogImage = '/img/hero-home.jpg' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
@@ -74,13 +74,13 @@ const allSchema = [...baseSchema, ...schema];
       <script type="application/ld+json" set:html={JSON.stringify(s)} />
     ))}
   </head>
-  <body>
+  <body data-base={BASE}>
     <Header />
     <main id="main">
       <slot />
     </main>
     <Footer />
     <QuoteDrawer />
-    <script src="/js/site.js" defer is:inline></script>
+    <script src={u('/js/site.js')} defer is:inline></script>
   </body>
 </html>

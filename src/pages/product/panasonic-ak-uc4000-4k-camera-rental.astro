@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { SITE, UC4000, CAMERA_PRODUCTS } from '../../data/catalog.js';
+import { SITE, UC4000, CAMERA_PRODUCTS, u } from '../../data/catalog.js';
 
 const related = UC4000.related
   .map((sku) => CAMERA_PRODUCTS.find((p) => p.sku === sku))
@@ -55,11 +55,11 @@ const breadcrumbSchema = {
   <div class="mx-auto max-w-[1440px] px-5 pt-8 lg:px-10">
     <nav aria-label="Breadcrumb">
       <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
-        <li><a href="/" class="link-draw hover:text-ink">Home</a></li>
+        <li><a href={u('/')} class="link-draw hover:text-ink">Home</a></li>
         <li aria-hidden="true">/</li>
         <li><a href="#" class="link-draw hover:text-ink">Audio Visual</a></li>
         <li aria-hidden="true">/</li>
-        <li><a href="/camera-rental/" class="link-draw hover:text-ink">Camera Rentals</a></li>
+        <li><a href={u('/camera-rental/')} class="link-draw hover:text-ink">Camera Rentals</a></li>
         <li aria-hidden="true">/</li>
         <li aria-current="page" class="text-ink">AK-UC4000</li>
       </ol>
@@ -187,7 +187,7 @@ const breadcrumbSchema = {
           professional broadcast gear — with local pickup in Las Vegas, Chicago and Orlando,
           or overnight shipping nationwide, both ways.
         </p>
-        <a href="/camera-rental/" class="link-draw mt-8 inline-block text-sm font-semibold">Browse the full camera fleet →</a>
+        <a href={u('/camera-rental/')} class="link-draw mt-8 inline-block text-sm font-semibold">Browse the full camera fleet →</a>
       </div>
       <div class="reveal">
         <h2 class="display-sub text-sm">Technical specifications</h2>

@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { SITE, CAMERA_PRODUCTS, CAMERA_SUBCATS } from '../../data/catalog.js';
+import { SITE, CAMERA_PRODUCTS, CAMERA_SUBCATS, u } from '../../data/catalog.js';
 
 const faqs = [
   {
@@ -81,7 +81,7 @@ const faqSchema = {
     <div class="mx-auto max-w-[1440px] px-5 pt-8 lg:px-10">
       <nav aria-label="Breadcrumb">
         <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
-          <li><a href="/" class="link-draw hover:text-ink">Home</a></li>
+          <li><a href={u('/')} class="link-draw hover:text-ink">Home</a></li>
           <li aria-hidden="true">/</li>
           <li><a href="#" class="link-draw hover:text-ink">Audio Visual</a></li>
           <li aria-hidden="true">/</li>
@@ -97,8 +97,10 @@ const faqSchema = {
             prepped by Panasonic-trained technicians and shipped as tested systems, not boxes of parts.
           </p>
           <p class="mt-4 max-w-[58ch] text-[0.9375rem] leading-relaxed text-ink-3">
-            Local pickup at our Las Vegas, Chicago and Orlando depots, or nationwide
-            overnight delivery both ways. Every rental includes 24/7 technical support.
+            Need to rent a video camera near you? Pick up locally at our Las Vegas, Chicago
+            and Orlando depots — or ship overnight to Los Angeles, New York City, Washington
+            DC and everywhere between, nationwide both ways. Every camera rental includes
+            24/7 technical support.
           </p>
           <div class="mt-8 flex flex-wrap items-center gap-5">
             <button type="button" class="bg-ink px-6 py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong" data-drawer-open>
@@ -109,7 +111,7 @@ const faqSchema = {
         </div>
         <div class="reveal-img relative hidden min-h-[300px] overflow-hidden lg:block">
           <img
-            src="/img/camera-hero.jpg"
+            src={u('/img/camera-hero.jpg')}
             alt="Camera body and prime lenses arranged on a dark bench"
             class="absolute inset-0 h-full w-full object-cover"
           />
@@ -180,35 +182,6 @@ const faqSchema = {
     </div>
   </section>
 
-  <!-- ============ FAQ ============ -->
-  <section class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
-    <div class="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
-      <div class="reveal">
-        <h2 class="display text-[clamp(1.75rem,3.5vw,2.75rem)]">Camera rental FAQs</h2>
-        <p class="mt-4 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ink-3">
-          Straight answers from the rental desk. Anything else — call {SITE.phone}.
-        </p>
-      </div>
-      <div class="reveal divide-y divide-line border-y border-line">
-        {faqs.map((f) => (
-          <details class="faq group py-1">
-            <summary class="flex items-center justify-between gap-6 py-4 text-left text-base font-semibold lg:text-lg">
-              {f.q}
-              <svg class="faq-icon h-4 w-4 flex-none text-ink-3" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.4" />
-              </svg>
-            </summary>
-            <div class="faq-body">
-              <div>
-                <p class="max-w-[68ch] pb-5 text-[0.9375rem] leading-relaxed text-ink-2">{f.a}</p>
-              </div>
-            </div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- ============ SEO CONTENT (long-form, keyword-carrying) ============ -->
   <section class="border-t border-line bg-surface/60">
     <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-20">
@@ -237,11 +210,85 @@ const faqSchema = {
           </p>
         </div>
       </div>
+      <div class="mt-12 grid gap-12 border-t border-line pt-12 lg:grid-cols-2 lg:gap-20">
+        <div class="reveal">
+          <h2 class="display-sub text-lg">A wide-angle view of the fleet</h2>
+          <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+            Our camera rental inventory ranges from minimal-footprint webcams to the full
+            studio broadcast experience — PTZ cameras, camcorders and every accessory in
+            between, including the trusty shooting riser. We're by your side 24/7 via phone
+            and email; reach out with any questions.
+          </p>
+        </div>
+        <div class="reveal">
+          <h2 class="display-sub text-lg">Customize your camera order with confidence</h2>
+          <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+            A video camera rental often needs supporting gear. We're your one-stop shop:
+            highly sought-after brands for lens rentals, advice on the right package for the
+            shots you're after, and shipping for camera rentals to New York, Los Angeles or
+            wherever production takes you.
+          </p>
+        </div>
+        <div class="reveal">
+          <h2 class="display-sub text-lg">Order fulfillment and quality service</h2>
+          <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+            Don't see what you need listed? Our experts respond promptly with the quote you
+            need — and we rent far more than cameras, from lenses to AV gear like monitors
+            and computers for all of your post-production needs.
+          </p>
+        </div>
+        <div class="reveal">
+          <h2 class="display-sub text-lg">Studio camera rentals you can trust</h2>
+          <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
+            Every unit is meticulously checked so all elements are included and performing to
+            the brand's standards — then packed in a custom box per model for fast, safe
+            shipping. That's why 96% of our clients rent again.
+          </p>
+        </div>
+        <div class="reveal lg:col-span-2">
+          <h2 class="display-sub text-lg">4K camera chain rentals for event recording</h2>
+          <p class="mt-4 max-w-[70ch] text-[0.9375rem] leading-relaxed text-ink-2">
+            Our 4K Panasonic full camera chains are packaged and prepped for delivery so your
+            event executes with confidence — Fujinon 20× lens and Sachtler V-18 tripod
+            included. We understand time sensitivity: no waiting, no last-minute surprises.
+          </p>
+        </div>
+      </div>
+
       <ul class="reveal mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-line pt-8" aria-label="Camera brands we carry">
         {['Panasonic', 'Canon', 'Fujinon', 'GoPro', 'Insta360', 'Sachtler', 'Vinten'].map((brand) => (
           <li class="mono-label text-ink-3">{brand}</li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
+      <div class="reveal">
+        <h2 class="display text-[clamp(1.75rem,3.5vw,2.75rem)]">Camera rental FAQs</h2>
+        <p class="mt-4 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ink-3">
+          Straight answers from the rental desk. Anything else — call {SITE.phone}.
+        </p>
+      </div>
+      <div class="reveal divide-y divide-line border-y border-line">
+        {faqs.map((f) => (
+          <details class="faq group py-1">
+            <summary class="flex items-center justify-between gap-6 py-4 text-left text-base font-semibold lg:text-lg">
+              {f.q}
+              <svg class="faq-icon h-4 w-4 flex-none text-ink-3" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.4" />
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <div>
+                <p class="max-w-[68ch] pb-5 text-[0.9375rem] leading-relaxed text-ink-2">{f.a}</p>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
 

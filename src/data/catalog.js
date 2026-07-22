@@ -1,5 +1,12 @@
 // Real Hartford Technology Rentals taxonomy (from hartfordrents.com sitemaps)
 
+// Base-aware URL helper: keeps internal links working when the site is
+// deployed under a subpath (e.g. GitHub Pages /hartford-prototype/)
+const RAW_BASE = import.meta.env.BASE_URL || '/';
+export const BASE = RAW_BASE.endsWith('/') ? RAW_BASE : `${RAW_BASE}/`;
+export const u = (p) =>
+  !p || p === '#' || /^(https?:|tel:|mailto:)/.test(p) ? p : BASE + String(p).replace(/^\//, '');
+
 export const SITE = {
   name: 'Hartford Technology Rentals',
   legal: 'Hartford Technology Rental Company, LLC',
@@ -370,3 +377,15 @@ export const CLIENTS = [
   'Deloitte', 'World Bank', 'Duke University', 'US Air Force',
   'Hyatt Hotels', 'Northwestern', 'Salesforce', 'Mayo Clinic',
 ];
+
+// Rewrite internal slugs/images through the base-aware helper once, at module load
+NAV.forEach((division) =>
+  division.categories.forEach((cat) => {
+    cat.slug = u(cat.slug);
+    cat.img = u(cat.img);
+    cat.subs.forEach((sub) => { sub.slug = u(sub.slug); });
+  })
+);
+CAMERA_PRODUCTS.forEach((p) => { p.img = u(p.img); p.href = u(p.href); });
+UC4000.img = u(UC4000.img);
+UC4000.href = u(UC4000.href);
