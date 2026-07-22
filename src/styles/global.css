@@ -22,6 +22,26 @@
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* ---------- page transitions (cross-document view transitions) ---------- */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-out 0.16s ease-out both;
+}
+::view-transition-new(root) {
+  animation: vt-in 0.34s var(--ease-out-quart) both;
+}
+@keyframes vt-out {
+  to { opacity: 0; }
+}
+@keyframes vt-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ---------- base ---------- */
 
 html {
@@ -309,6 +329,8 @@ details.faq .faq-body > div { overflow: hidden; }
     transition-duration: 0.01ms !important;
   }
   .tally::after { animation: none; opacity: 0; }
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
   html.js .reveal, html.js .hero-line, html.js .hero-fade, html.js .hero-media {
     opacity: 1; transform: none; clip-path: none;
   }
