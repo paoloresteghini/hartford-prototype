@@ -26,7 +26,7 @@ const items = (cat ? cat.productIds : [])
     blurb: p.blurb,
     type: 'all',
     typeLabel: cat.name,
-    href: u(`/p/${p.slug}/`),
+    href: u(p.url),
     featured: false,
   }));
 
