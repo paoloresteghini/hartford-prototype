@@ -15,3 +15,12 @@ node_modules/
 # logs
 npm-debug.log*
 .playwright-mcp/
+
+# claude local settings
+.claude/settings.local.json
+
+# client data mirror (never commit)
+.hubdb-cache/
+
+# generated from client HubDB mirror (never commit)
+src/data/hubdb.generated.json

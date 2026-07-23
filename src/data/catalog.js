@@ -17,7 +17,12 @@ export const SITE = {
   locations: ['Las Vegas', 'Chicago', 'Orlando'],
 };
 
-export const NAV = [
+// Real HubDB catalog, when generated locally (scripts/generate-catalog.mjs).
+// The file is gitignored (client data) — deploys without it fall back to NAV_STATIC.
+const _hubdbModules = import.meta.glob('./hubdb.generated.json', { eager: true });
+export const HUBDB = _hubdbModules['./hubdb.generated.json']?.default || null;
+
+const NAV_STATIC = [
   {
     label: 'Audio Visual',
     id: 'av',
@@ -198,6 +203,18 @@ export const NAV = [
     ],
   },
 ];
+
+// Prefer the real HubDB tree; keep hand-built menu as deploy fallback.
+export const NAV = HUBDB
+  ? HUBDB.nav.map((d) => ({
+      ...d,
+      categories: d.categories.map((c) => ({
+        ...c,
+        img: c.img || null,
+        subs: c.subs.length ? c.subs : [{ name: c.name, slug: c.slug }],
+      })),
+    }))
+  : NAV_STATIC;
 
 // Camera Rentals category — real fleet items
 export const CAMERA_SUBCATS = [

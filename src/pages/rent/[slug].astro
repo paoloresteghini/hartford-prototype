@@ -1,0 +1,157 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { SITE, HUBDB, u } from '../../data/catalog.js';
+
+export function getStaticPaths() {
+  if (!HUBDB) return [];
+  return HUBDB.categories
+    .filter((c) => c.slug)
+    .map((c) => ({ params: { slug: c.slug }, props: { cat: c } }));
+}
+
+const { cat } = Astro.props;
+const byId = new Map(HUBDB.products.map((p) => [p.id, p]));
+const catById = new Map(HUBDB.categories.map((c) => [c.id, c]));
+const items = cat.productIds
+  .map((id) => byId.get(id))
+  .filter(Boolean)
+  .map((p) => ({
+    sku: p.id,
+    brand: '',
+    name: p.name.replace(/\s*Rentals?$/i, ''),
+    img: p.image || '/img/camera-hero.jpg',
+    blurb: p.blurb,
+    type: 'all',
+    typeLabel: cat.name,
+    href: u(`/p/${p.slug}/`),
+    featured: false,
+  }));
+
+const subs =
+  cat.level === 'top'
+    ? HUBDB.categories.filter((c) => c.level === 'mid' && c.topId === cat.id)
+    : [];
+const parent = cat.topId ? catById.get(cat.topId) : null;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    ...(parent
+      ? [{ '@type': 'ListItem', position: 2, name: parent.name, item: `${SITE.url}/rent/${parent.slug}/` }]
+      : []),
+    { '@type': 'ListItem', position: parent ? 3 : 2, name: cat.name, item: `${SITE.url}/rent/${cat.slug}/` },
+  ],
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${SITE.url}/rent/${cat.slug}/#collection`,
+  name: cat.name,
+  url: `${SITE.url}/rent/${cat.slug}/`,
+  description: cat.metaDescription,
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: items.length,
+    itemListElement: items.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: { '@type': 'Product', name: p.name, image: p.img, sku: p.sku, url: `${SITE.url}${p.href}` },
+    })),
+  },
+};
+---
+
+<Base
+  title={`${cat.name} | Hartford Technology Rentals`}
+  description={cat.metaDescription || `${cat.name} for business events, delivered nationwide.`}
+  schema={[breadcrumbSchema, collectionSchema]}
+>
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-[1440px] px-5 pt-8 lg:px-10">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
+          <li><a href={u('/')} class="link-draw hover:text-ink">Home</a></li>
+          <li aria-hidden="true">/</li>
+          {parent && (
+            <>
+              <li><a href={u(`/rent/${parent.slug}/`)} class="link-draw hover:text-ink">{parent.name}</a></li>
+              <li aria-hidden="true">/</li>
+            </>
+          )}
+          <li aria-current="page" class="text-ink">{cat.name}</li>
+        </ol>
+      </nav>
+
+      <div class="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16 lg:pb-16">
+        <div>
+          <h1 class="display text-[clamp(2.25rem,5vw,4rem)]">{cat.name}</h1>
+          {cat.description && (
+            <div class="prose-seo mt-6 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={cat.description} />
+          )}
+          <div class="mt-8 flex flex-wrap items-center gap-5">
+            <button type="button" class="bg-ink px-6 py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong" data-drawer-open>
+              Request a quote
+            </button>
+            <a href={SITE.phoneHref} class="mono-label link-draw text-ink-2">{SITE.phone} · 24/7</a>
+          </div>
+        </div>
+        {cat.image && (
+          <div class="reveal-img relative hidden min-h-[280px] overflow-hidden lg:block">
+            <img src={cat.image} alt={cat.name} class="absolute inset-0 h-full w-full object-cover" />
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {subs.length > 0 && (
+    <section class="border-b border-line bg-surface/60">
+      <div class="mx-auto max-w-[1440px] px-5 py-8 lg:px-10">
+        <p class="mono-label text-ink-3">Browse by type</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {subs.map((s) => (
+            <a href={u(`/rent/${s.slug}/`)} class="border border-line px-4 py-2 text-sm font-medium transition-colors hover:border-ink">
+              {s.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10 lg:py-16">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <h2 class="display-sub text-lg">Available for rent</h2>
+      <p class="mono-label text-ink-3">{items.length} units</p>
+    </div>
+    <div class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
+      {items.map((p, i) => (
+        <ProductCard product={p} eager={i < 4} />
+      ))}
+    </div>
+    {items.length === 0 && (
+      <p class="mt-8 text-sm text-ink-3">
+        The full fleet is deeper than the site —
+        <button type="button" class="link-draw font-medium text-ink" data-drawer-open>ask for it in your quote</button>
+        or call {SITE.phone}.
+      </p>
+    )}
+  </section>
+
+  <section class="border-t border-line bg-ink text-bg">
+    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
+      <div>
+        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Same-day response on every request</p>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Spec your package</h2>
+      </div>
+      <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+        Review quote list
+      </button>
+    </div>
+  </section>
+</Base>
