@@ -275,8 +275,35 @@
     const input = searchPanel.querySelector('[data-search-input]');
     const results = searchPanel.querySelector('[data-search-results]');
     const emptyMsg = searchPanel.querySelector('[data-search-empty]');
+
+    // Full-catalog index: fetched lazily (once) on first search-input focus,
+    // rather than embedded inline. Cached in module scope for the page's life.
+    const TYPE_LABEL = { p: 'Product', c: 'Category', l: 'Location' };
     let index = [];
-    try { index = JSON.parse(document.querySelector('[data-search-index]').textContent); } catch {}
+    let indexPromise = null;
+
+    const loadIndex = () => {
+      if (indexPromise) return indexPromise;
+      indexPromise = (async () => {
+        try {
+          const base = document.documentElement.dataset.base || '/';
+          const res = await fetch(base + 'search-index.json');
+          const data = res.ok ? await res.json() : { entries: [] };
+          const entries = Array.isArray(data.entries) ? data.entries : [];
+          index = entries.map((e) => ({
+            label: e.name || '',
+            meta: TYPE_LABEL[e.t] || '',
+            href: e.url ? base + String(e.url).replace(/^\//, '') : '#',
+            img: e.img || '',
+          }));
+        } catch {
+          index = [];
+        }
+        buildVocab();
+        if (input.value) render(input.value);
+      })();
+      return indexPromise;
+    };
 
     const setSearch = (openState) => {
       if (openState) {
@@ -319,8 +346,11 @@
       return m[a.length][b.length];
     };
 
-    // vocabulary for typo correction, built from the index once
-    const vocab = [...new Set(index.flatMap((it) => norm(it.label + ' ' + it.meta).split(' ')))].filter((w) => w.length > 3);
+    // vocabulary for typo correction, (re)built whenever the index loads/changes
+    let vocab = [];
+    const buildVocab = () => {
+      vocab = [...new Set(index.flatMap((it) => norm(it.label + ' ' + it.meta).split(' ')))].filter((w) => w.length > 3);
+    };
 
     const expandQuery = (q) => {
       let out = norm(q);
@@ -476,7 +506,7 @@
       clearTimeout(debounce);
       debounce = setTimeout(() => render(input.value), 90);
     });
-    input.addEventListener('focus', () => { if (!input.value) renderPopular(); });
+    input.addEventListener('focus', () => { loadIndex(); if (!input.value) renderPopular(); });
 
     const setActive = (rows, i) => {
       rows.forEach((r) => r.classList.remove('bg-surface'));
