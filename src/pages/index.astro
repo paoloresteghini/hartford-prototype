@@ -8,6 +8,14 @@ import { buildNavFromCategories } from '../lib/hubdb/nav.js';
 const cats = (await getCollection('categories')).map((c) => c.data);
 const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
 
+const cities = (await getCollection('cities')).map((c) => c.data);
+const cityByToken = (token) => cities.find((c) => c.cityToken === token);
+const CITY_LINKS = {
+  'Las Vegas': cityByToken('las-vegas-nv')?.url,
+  Chicago: cityByToken('chicago-il')?.url,
+  Orlando: cityByToken('orlando-fl')?.url,
+};
+
 const featured = [
   CAMERA_PRODUCTS.find((p) => p.sku === 'AK-UC4000'),
   CAMERA_PRODUCTS.find((p) => p.sku === 'AW-UE160'),
@@ -238,9 +246,11 @@ const steps = [
         <p class="mt-4 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2">
           Hartford Technology Rentals delivers the best rental rates on professional audio
           visual gear and business computing — from broadcast camera rentals and LED video
-          walls to laptop, tablet and event printer fleets. Local pickup in Las Vegas,
-          Chicago and Orlando; overnight delivery to conferences, conventions and campuses
-          across the United States.
+          walls to laptop, tablet and event printer fleets. Local pickup in
+          <a href={u(CITY_LINKS['Las Vegas'] || '#')} class="link-draw font-semibold text-ink">Las Vegas</a>,
+          <a href={u(CITY_LINKS.Chicago || '#')} class="link-draw font-semibold text-ink">Chicago</a> and
+          <a href={u(CITY_LINKS.Orlando || '#')} class="link-draw font-semibold text-ink">Orlando</a>; overnight
+          delivery to conferences, conventions and campuses across the United States.
         </p>
       </div>
       <div class="reveal">

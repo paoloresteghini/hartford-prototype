@@ -1,0 +1,21 @@
+---
+// src/pages/[slug].astro
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE, u } from '../data/catalog.js';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('eventPages');
+  return pages.map((p) => ({ params: { slug: p.data.path }, props: { page: p.data } }));
+}
+const { page } = Astro.props;
+---
+<Base title={page.title || page.h1} description={page.metaDescription}>
+  <section class="mx-auto max-w-[1440px] px-5 pt-10 lg:px-10">
+    <h1 class="display max-w-4xl text-[clamp(2rem,5vw,3.75rem)]">{page.h1}</h1>
+    <div class="prose-seo mt-6 max-w-[70ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={page.introHtml} />
+  </section>
+  <section class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10">
+    <div class="prose-seo max-w-[74ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={page.bodyHtml} />
+  </section>
+</Base>
