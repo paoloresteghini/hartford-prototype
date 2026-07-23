@@ -74,22 +74,29 @@ const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
                   <div class="relative py-8 pl-10 pr-10">
                     {division.categories.map((cat, i) => (
                       <div
-                        class:list={['mega-sub-pane grid-cols-2 content-start gap-x-8', { active: i === 0 }]}
+                        class:list={['mega-sub-pane h-full grid-rows-[auto_1fr_auto]', { active: i === 0 }]}
                         data-mega-pane={`${division.id}-${i}`}
                       >
-                        <div class="col-span-2 mb-4 flex items-baseline justify-between border-b border-line pb-3">
+                        <div class="mb-4 flex items-baseline justify-between border-b border-line pb-3">
                           <p class="display-sub text-sm">{cat.name}</p>
                           <a href={cat.slug} class="mono-label link-draw text-ink-3 hover:text-ink">View all →</a>
                         </div>
-                        {cat.subs.map((sub) => (
-                          <a
-                            href={sub.slug}
-                            class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
-                          >
-                            {sub.name}
-                          </a>
-                        ))}
-                        <p class="col-span-2 mt-5 text-sm text-ink-3">{cat.blurb}</p>
+                        <div class="grid grid-cols-2 content-start gap-x-8">
+                          {cat.subs.map((sub) => (
+                            <a
+                              href={sub.slug}
+                              class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
+                            >
+                              {sub.name}
+                            </a>
+                          ))}
+                        </div>
+                        <div class="mt-6 flex items-baseline justify-between gap-6 border-t border-line pt-4">
+                          <p class="text-sm text-ink-3">{cat.tagline ?? cat.blurb}</p>
+                          <button type="button" class="mono-label link-draw flex-none text-ink" data-drawer-open>
+                            Get your quote →
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -114,7 +121,7 @@ const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
                           class:list={['mega-sub-pane absolute inset-0 place-content-center bg-surface', { active: i === 0 }]}
                           data-mega-pane-img={`${division.id}-${i}`}
                         >
-                          <p class="mono-label px-8 text-center text-ink-3">{cat.blurb}</p>
+                          <p class="mono-label px-8 text-center text-ink-3">{cat.tagline ?? cat.blurb}</p>
                         </div>
                       )
                     )}
