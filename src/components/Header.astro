@@ -1,26 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import { NAV_STATIC, SITE, CAMERA_PRODUCTS, u } from '../data/catalog.js';
+import { NAV_STATIC, SITE, u } from '../data/catalog.js';
 import { buildNavFromCategories } from '../lib/hubdb/nav.js';
 
 const cats = (await getCollection('categories')).map((c) => c.data);
 const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
-
-// Client-side search index: categories, subcategories, products
-const searchIndex = [
-  ...NAV.flatMap((division) =>
-    division.categories.flatMap((cat) => [
-      { label: `${cat.name} Rentals`, meta: `${division.label} · Category`, href: cat.slug },
-      ...cat.subs.map((sub) => ({ label: sub.name, meta: `${cat.name} · ${division.label}`, href: sub.slug })),
-    ])
-  ),
-  ...CAMERA_PRODUCTS.map((p) => ({
-    label: `${p.brand} ${p.name}`,
-    meta: `${p.sku} · ${p.typeLabel}`,
-    href: p.href,
-    img: p.img,
-  })),
-];
 ---
 
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[80] focus:bg-bg focus:text-ink focus:px-4 focus:py-2 focus:text-sm">
@@ -204,8 +188,6 @@ const searchIndex = [
     </div>
   </div>
 </header>
-
-<script type="application/json" data-search-index set:html={JSON.stringify(searchIndex)} />
 
 <!-- mobile nav sheet -->
 <div class="fixed inset-0 z-[60] lg:hidden" hidden data-sheet-root>
