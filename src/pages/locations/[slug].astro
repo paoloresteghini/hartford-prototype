@@ -1,123 +1,145 @@
 ---
-import Base from '../../layouts/Base.astro';
-import ProductCard from '../../components/ProductCard.astro';
-import { SITE, u } from '../../data/catalog.js';
+// src/pages/locations/[slug].astro
+// Single route serving all three location page kinds: 7,502 matrix pages
+// (category × state/city), 51 state pages, 191 city pages. All groupings
+// needed by the page components (siblings, "more rentals", category
+// indexes, city grids) are precomputed ONCE here as plain Maps/objects and
+// handed down via props — the components never re-filter the full
+// locationPages collection per page (that would be O(n^2) over 7,502 rows).
+import { getCollection } from 'astro:content';
+import LocationMatrixPage from '../../components/LocationMatrixPage.astro';
+import StatePage from '../../components/StatePage.astro';
+import CityPage from '../../components/CityPage.astro';
 
-// Interim Florida sample route — replaced wholesale in Task 6. Astro hoists
-// getStaticPaths into an isolated scope (only imports carry over), so the
-// HUBDB stub must live inside the function, not as a sibling const.
-export function getStaticPaths() {
-  const HUBDB = null;
-  if (!HUBDB) return [];
-  return HUBDB.locationSamples.map((row) => ({ params: { slug: row.path }, props: { row } }));
+export async function getStaticPaths() {
+  // Astro hoists getStaticPaths into an isolated scope (only imports carry
+  // over — see the removed interim route's comment), so these constants
+  // must live inside the function, not as sibling module-level consts.
+  const MORE_RENTALS_CAP = 12;
+  const PRODUCT_GRID_CAP = 8;
+  const [matrixEntries, stateEntries, cityEntries, categoryEntries, productEntries] = await Promise.all([
+    getCollection('locationPages'),
+    getCollection('states'),
+    getCollection('cities'),
+    getCollection('categories'),
+    getCollection('products'),
+  ]);
+
+  const matrixRows = matrixEntries.map((e) => e.data);
+  const stateRows = stateEntries.map((e) => e.data);
+  const cityRows = cityEntries.map((e) => e.data);
+  const categoryRows = categoryEntries.map((e) => e.data);
+  const productRows = productEntries.map((e) => e.data);
+
+  if (matrixRows.length === 0 && stateRows.length === 0 && cityRows.length === 0) return [];
+
+  const categoryById = new Map(categoryRows.map((c) => [c.id, c]));
+  const productById = new Map(productRows.map((p) => [p.id, p]));
+  const cityByToken = new Map(cityRows.map((c) => [c.cityToken, c]));
+  const stateByPath = new Map(stateRows.map((s) => [s.path, s]));
+
+  // ---- one pass over the 7,502 matrix rows to build every grouping needed ----
+  const byCatState = new Map(); // `${categorySlug}|${stateSlug}` -> rows[]  (siblings)
+  const byStateLevel = new Map(); // stateSlug -> state-level rows[]  ("more rentals" + state category index)
+  const byCityToken = new Map(); // cityToken -> city-level rows[]   ("more rentals" + city matrix links)
+  const cityTokensByState = new Map(); // stateSlug -> Set(cityToken)  (state city grid)
+  const rowMeta = new Map(); // path -> { cityTok }
+
+  for (const row of matrixRows) {
+    const cityTok = row.isStateLevel ? null : row.path.replace(`${row.categorySlug}-`, '');
+    rowMeta.set(row.path, { cityTok });
+
+    const csKey = `${row.categorySlug}|${row.stateSlug}`;
+    if (!byCatState.has(csKey)) byCatState.set(csKey, []);
+    byCatState.get(csKey).push(row);
+
+    if (row.isStateLevel) {
+      if (!byStateLevel.has(row.stateSlug)) byStateLevel.set(row.stateSlug, []);
+      byStateLevel.get(row.stateSlug).push(row);
+    } else {
+      if (!byCityToken.has(cityTok)) byCityToken.set(cityTok, []);
+      byCityToken.get(cityTok).push(row);
+
+      if (!cityTokensByState.has(row.stateSlug)) cityTokensByState.set(row.stateSlug, new Set());
+      cityTokensByState.get(row.stateSlug).add(cityTok);
+    }
+  }
+
+  const toProductItems = (cat) => {
+    if (!cat) return [];
+    return cat.productIds
+      .slice(0, PRODUCT_GRID_CAP)
+      .map((id) => productById.get(id))
+      .filter(Boolean)
+      .map((p) => ({
+        sku: p.id,
+        brand: '',
+        name: p.name.replace(/\s*Rentals?$/i, ''),
+        img: p.image || '/img/camera-hero.jpg',
+        blurb: p.blurb,
+        type: 'all',
+        typeLabel: cat.name,
+        href: p.url,
+        featured: false,
+      }));
+  };
+
+  // ---- matrix pages ----
+  const matrixPaths = matrixRows.map((row) => {
+    const { cityTok } = rowMeta.get(row.path);
+    const cat = row.categoryId ? categoryById.get(row.categoryId) ?? null : null;
+    const items = toProductItems(cat);
+
+    const csKey = `${row.categorySlug}|${row.stateSlug}`;
+    const siblings = (byCatState.get(csKey) || []).filter((r) => r.path !== row.path);
+
+    const moreRentalsPool = row.isStateLevel ? byStateLevel.get(row.stateSlug) || [] : byCityToken.get(cityTok) || [];
+    const moreRentals = moreRentalsPool.filter((r) => r.path !== row.path).slice(0, MORE_RENTALS_CAP);
+
+    const state = stateByPath.get(row.stateSlug) ?? null;
+    const city = row.isStateLevel ? null : cityByToken.get(cityTok) ?? null;
+
+    return {
+      params: { slug: row.path },
+      props: { kind: 'matrix', row, cat, items, siblings, moreRentals, state, city },
+    };
+  });
+
+  // ---- state pages ----
+  const statePaths = stateRows.map((state) => {
+    const tokens = cityTokensByState.get(state.path) || new Set();
+    const cityList = [...tokens].map((t) => cityByToken.get(t)).filter(Boolean);
+    const categoryIndex = byStateLevel.get(state.path) || [];
+    return {
+      params: { slug: state.path },
+      props: { kind: 'state', row: state, cityList, categoryIndex },
+    };
+  });
+
+  // ---- city pages ----
+  const cityPaths = cityRows.map((city) => {
+    const matrixLinks = byCityToken.get(city.cityToken) || [];
+    return {
+      params: { slug: city.path },
+      props: { kind: 'city', row: city, matrixLinks },
+    };
+  });
+
+  return [...matrixPaths, ...statePaths, ...cityPaths];
 }
-const HUBDB = null;
 
-const { row } = Astro.props;
-const cat = row.matchedCategoryId
-  ? HUBDB.categories.find((c) => c.id === row.matchedCategoryId)
-  : HUBDB.categories.find((c) => c.slug === row.categorySlug) || null;
-
-const byId = new Map(HUBDB.products.map((p) => [p.id, p]));
-const items = (cat ? cat.productIds : [])
-  .slice(0, 8)
-  .map((id) => byId.get(id))
-  .filter(Boolean)
-  .map((p) => ({
-    sku: p.id,
-    brand: '',
-    name: p.name.replace(/\s*Rentals?$/i, ''),
-    img: p.image || '/img/camera-hero.jpg',
-    blurb: p.blurb,
-    type: 'all',
-    typeLabel: cat.name,
-    href: u(`/product/${p.slug}/`),
-    featured: false,
-  }));
-
-// sibling pages: same category, same state (state page + its cities)
-const siblings = HUBDB.locationSamples.filter(
-  (r) => r.categorySlug === row.categorySlug && r.path !== row.path
-);
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
-    { '@type': 'ListItem', position: 2, name: 'Locations', item: `${SITE.url}/locations/` },
-    { '@type': 'ListItem', position: 3, name: row.h1, item: `${SITE.url}/locations/${row.path}/` },
-  ],
-};
+const props = Astro.props;
 ---
-
-<Base title={`${row.pageName || row.h1} | Hartford Technology Rentals`} description={row.metaDescription} schema={[breadcrumbSchema]}>
-  <section class="border-b border-line">
-    <div class="mx-auto max-w-[1440px] px-5 pt-8 lg:px-10">
-      <nav aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
-          <li><a href={u('/')} class="link-draw hover:text-ink">Home</a></li>
-          <li aria-hidden="true">/</li>
-          <li class="text-ink-3">{row.state}</li>
-          <li aria-hidden="true">/</li>
-          <li aria-current="page" class="text-ink">{row.category}</li>
-        </ol>
-      </nav>
-
-      <div class="pb-12 pt-10 lg:pb-16">
-        <p class="mono-label flex items-center gap-2 text-ink-3"><span class="tally" aria-hidden="true"></span>{row.isStateLevel ? 'Statewide service' : 'Local service'} · {row.state}</p>
-        <h1 class="display mt-4 max-w-4xl text-[clamp(2rem,5vw,3.75rem)]">{row.h1}</h1>
-        <div class="prose-seo mt-6 max-w-[68ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={row.introHtml} />
-        <div class="mt-8 flex flex-wrap items-center gap-5">
-          <button type="button" class="bg-ink px-6 py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong" data-drawer-open>
-            Request a quote
-          </button>
-          <a href={SITE.phoneHref} class="mono-label link-draw text-ink-2">{SITE.phone} · 24/7</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {items.length > 0 && (
-    <section class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10 lg:py-16">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <h2 class="display-sub text-lg">Popular {cat.name.toLowerCase()} in {row.state}</h2>
-        <a href={u(`/rent/${cat.slug}/`)} class="link-draw text-sm font-medium text-ink">View all →</a>
-      </div>
-      <div class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
-        {items.map((p, i) => (
-          <ProductCard product={p} eager={i < 4} />
-        ))}
-      </div>
-    </section>
-  )}
-
-  {siblings.length > 0 && (
-    <section class="border-t border-line bg-surface/60">
-      <div class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10">
-        <h2 class="display-sub text-lg">{row.category} across {row.state.split(',')[0]}</h2>
-        <ul class="mt-6 flex flex-wrap gap-2">
-          {siblings.map((s) => (
-            <li>
-              <a href={u(`/locations/${s.path}/`)} class="block border border-line px-4 py-2 text-sm font-medium transition-colors hover:border-ink">
-                {s.pageName}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  <section class="border-t border-line bg-ink text-bg">
-    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
-      <div>
-        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Same-day response on every request</p>
-        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">{row.category} in {row.state.split(',')[0]}, sorted</h2>
-      </div>
-      <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
-        Review quote list
-      </button>
-    </div>
-  </section>
-</Base>
+{props.kind === 'matrix' && (
+  <LocationMatrixPage
+    row={props.row}
+    cat={props.cat}
+    items={props.items}
+    siblings={props.siblings}
+    moreRentals={props.moreRentals}
+    state={props.state}
+    city={props.city}
+  />
+)}
+{props.kind === 'state' && <StatePage row={props.row} cityList={props.cityList} categoryIndex={props.categoryIndex} />}
+{props.kind === 'city' && <CityPage row={props.row} matrixLinks={props.matrixLinks} />}
