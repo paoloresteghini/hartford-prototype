@@ -24,6 +24,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Fetch HubDB mirror (read-only)
+        env:
+          HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+        run: |
+          if [ -z "$HUBSPOT_TOKEN" ]; then
+            echo "No HUBSPOT_TOKEN secret — skipping mirror fetch (fallback build)"
+            exit 0
+          fi
+          node scripts/fetch-hubdb.mjs
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'

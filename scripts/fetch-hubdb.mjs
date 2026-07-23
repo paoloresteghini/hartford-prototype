@@ -5,14 +5,20 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const env = Object.fromEntries(
-  readFileSync(join(root, '.env'), 'utf8')
-    .split('\n')
-    .filter((l) => l.includes('='))
-    .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
-);
-const TOKEN = env.HUBSPOT_TOKEN;
-if (!TOKEN) throw new Error('HUBSPOT_TOKEN missing from .env');
+
+// Prefer the environment (CI secret) over .env; only fall back to parsing
+// .env when the token isn't already present in process.env.
+let TOKEN = process.env.HUBSPOT_TOKEN;
+if (!TOKEN) {
+  const env = Object.fromEntries(
+    readFileSync(join(root, '.env'), 'utf8')
+      .split('\n')
+      .filter((l) => l.includes('='))
+      .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
+  );
+  TOKEN = env.HUBSPOT_TOKEN;
+}
+if (!TOKEN) throw new Error('HUBSPOT_TOKEN missing from environment or .env');
 
 const get = async (path) => {
   const res = await fetch(`https://api.hubapi.com${path}`, {
