@@ -28,7 +28,7 @@ const year = new Date().getFullYear();
         <nav aria-label={`${division.label} rentals`}>
           <p class="display-sub mb-5 text-sm text-bg">{division.label}</p>
           <ul class="space-y-2.5">
-            {division.categories.map((cat) => (
+            {division.categories.slice(0, 8).map((cat) => (
               <li>
                 <a href={cat.slug} class="link-draw text-[0.9375rem] text-muted-dark transition-colors hover:text-bg">
                   {cat.name}
