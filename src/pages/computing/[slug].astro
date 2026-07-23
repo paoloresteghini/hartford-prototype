@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryPage from '../../components/CategoryPage.astro';
+
+export async function getStaticPaths() {
+  const cats = await getCollection('categories');
+  return cats
+    .filter((c) => c.data.division === 'computing')
+    .map((c) => ({ params: { slug: c.data.slug }, props: { cat: c } }));
+}
+
+const { cat } = Astro.props;
+const [cats, products] = await Promise.all([getCollection('categories'), getCollection('products')]);
+const byId = new Map(products.map((p) => [p.id, p.data]));
+const items = cat.data.productIds.map((id) => byId.get(id)).filter(Boolean);
+const subs = cats.filter((c) => c.data.level === 'mid' && c.data.topId === cat.id).map((c) => c.data);
+const parent = cat.data.topId ? cats.find((c) => c.id === cat.data.topId)?.data ?? null : null;
+---
+<CategoryPage cat={cat.data} {items} {subs} {parent} />

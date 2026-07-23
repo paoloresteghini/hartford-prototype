@@ -1,5 +1,10 @@
 ---
-import { NAV, SITE, CAMERA_PRODUCTS, u } from '../data/catalog.js';
+import { getCollection } from 'astro:content';
+import { NAV_STATIC, SITE, CAMERA_PRODUCTS, u } from '../data/catalog.js';
+import { buildNavFromCategories } from '../lib/hubdb/nav.js';
+
+const cats = (await getCollection('categories')).map((c) => c.data);
+const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
 
 // Client-side search index: categories, subcategories, products
 const searchIndex = [

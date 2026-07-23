@@ -1,38 +1,32 @@
 ---
-import Base from '../../layouts/Base.astro';
-import ProductCard from '../../components/ProductCard.astro';
-import { SITE, HUBDB, u } from '../../data/catalog.js';
+// Shared PLP template for /audio/<slug>/ and /computing/<slug>/ routes.
+// Ported from the interim src/pages/rent/[slug].astro, extended with the
+// long-form SEO content the categories collection now carries
+// (descriptionHtml, description2Html, columns, productLineupHtml).
+import Base from '../layouts/Base.astro';
+import ProductCard from './ProductCard.astro';
+import { SITE, u } from '../data/catalog.js';
 
-export function getStaticPaths() {
-  if (!HUBDB) return [];
-  return HUBDB.categories
-    .filter((c) => c.slug)
-    .map((c) => ({ params: { slug: c.slug }, props: { cat: c } }));
+interface Props {
+  cat: any;
+  items: any[];
+  subs: any[];
+  parent: any | null;
 }
 
-const { cat } = Astro.props;
-const byId = new Map(HUBDB.products.map((p) => [p.id, p]));
-const catById = new Map(HUBDB.categories.map((c) => [c.id, c]));
-const items = cat.productIds
-  .map((id) => byId.get(id))
-  .filter(Boolean)
-  .map((p) => ({
-    sku: p.id,
-    brand: '',
-    name: p.name.replace(/\s*Rentals?$/i, ''),
-    img: p.image || '/img/camera-hero.jpg',
-    blurb: p.blurb,
-    type: 'all',
-    typeLabel: cat.name,
-    href: u(`/product/${p.slug}/`),
-    featured: false,
-  }));
+const { cat, items, subs, parent } = Astro.props;
 
-const subs =
-  cat.level === 'top'
-    ? HUBDB.categories.filter((c) => c.level === 'mid' && c.topId === cat.id)
-    : [];
-const parent = cat.topId ? catById.get(cat.topId) : null;
+const products = items.map((p) => ({
+  sku: p.id,
+  brand: '',
+  name: p.name.replace(/\s*Rentals?$/i, ''),
+  img: p.image || '/img/camera-hero.jpg',
+  blurb: p.blurb,
+  type: 'all',
+  typeLabel: cat.name,
+  href: u(p.url),
+  featured: false,
+}));
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -40,24 +34,24 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
     ...(parent
-      ? [{ '@type': 'ListItem', position: 2, name: parent.name, item: `${SITE.url}/rent/${parent.slug}/` }]
+      ? [{ '@type': 'ListItem', position: 2, name: parent.name, item: `${SITE.url}${parent.url}` }]
       : []),
-    { '@type': 'ListItem', position: parent ? 3 : 2, name: cat.name, item: `${SITE.url}/rent/${cat.slug}/` },
+    { '@type': 'ListItem', position: parent ? 3 : 2, name: cat.name, item: `${SITE.url}${cat.url}` },
   ],
 };
 
 const collectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  '@id': `${SITE.url}/rent/${cat.slug}/#collection`,
+  '@id': `${SITE.url}${cat.url}#collection`,
   name: cat.name,
-  url: `${SITE.url}/rent/${cat.slug}/`,
+  url: `${SITE.url}${cat.url}`,
   description: cat.metaDescription,
   isPartOf: { '@id': `${SITE.url}/#website` },
   mainEntity: {
     '@type': 'ItemList',
-    numberOfItems: items.length,
-    itemListElement: items.map((p, i) => ({
+    numberOfItems: products.length,
+    itemListElement: products.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       item: { '@type': 'Product', name: p.name, image: p.img, sku: p.sku, url: `${SITE.url}${p.href}` },
@@ -79,7 +73,7 @@ const collectionSchema = {
           <li aria-hidden="true">/</li>
           {parent && (
             <>
-              <li><a href={u(`/rent/${parent.slug}/`)} class="link-draw hover:text-ink">{parent.name}</a></li>
+              <li><a href={u(parent.url)} class="link-draw hover:text-ink">{parent.name}</a></li>
               <li aria-hidden="true">/</li>
             </>
           )}
@@ -90,8 +84,8 @@ const collectionSchema = {
       <div class="grid gap-10 pb-12 pt-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16 lg:pb-16">
         <div>
           <h1 class="display text-[clamp(2.25rem,5vw,4rem)]">{cat.name}</h1>
-          {cat.description && (
-            <div class="prose-seo mt-6 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={cat.description} />
+          {cat.descriptionHtml && (
+            <div class="prose-seo reveal mt-6 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={cat.descriptionHtml} />
           )}
           <div class="mt-8 flex flex-wrap items-center gap-5">
             <button type="button" class="bg-ink px-6 py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong" data-drawer-open>
@@ -115,7 +109,7 @@ const collectionSchema = {
         <p class="mono-label text-ink-3">Browse by type</p>
         <div class="mt-4 flex flex-wrap gap-2">
           {subs.map((s) => (
-            <a href={u(`/rent/${s.slug}/`)} class="border border-line px-4 py-2 text-sm font-medium transition-colors hover:border-ink">
+            <a href={u(s.url)} class="border border-line px-4 py-2 text-sm font-medium transition-colors hover:border-ink">
               {s.name}
             </a>
           ))}
@@ -127,14 +121,14 @@ const collectionSchema = {
   <section class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10 lg:py-16">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <h2 class="display-sub text-lg">Available for rent</h2>
-      <p class="mono-label text-ink-3">{items.length} units</p>
+      <p class="mono-label text-ink-3">{products.length} units</p>
     </div>
     <div class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
-      {items.map((p, i) => (
+      {products.map((p, i) => (
         <ProductCard product={p} eager={i < 4} />
       ))}
     </div>
-    {items.length === 0 && (
+    {products.length === 0 && (
       <p class="mt-8 text-sm text-ink-3">
         The full fleet is deeper than the site —
         <button type="button" class="link-draw font-medium text-ink" data-drawer-open>ask for it in your quote</button>
@@ -142,6 +136,41 @@ const collectionSchema = {
       </p>
     )}
   </section>
+
+  {cat.columns?.length > 0 && (
+    <section class="border-y border-line bg-paper-dark text-bg">
+      <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
+        <div class="grid gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 md:grid-cols-2 lg:grid-cols-4">
+          {cat.columns.map((col: { heading: string; image: string | null; description: string }) => (
+            <div class="reveal bg-paper-dark p-8 lg:p-10">
+              {col.image && (
+                <img src={col.image} alt="" class="mb-5 h-32 w-full object-cover" loading="lazy" />
+              )}
+              {col.heading && <p class="display-sub text-lg">{col.heading}</p>}
+              {col.description && (
+                <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted-dark">{col.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {cat.description2Html && (
+    <section class="border-b border-line bg-surface/60">
+      <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-20">
+        <div class="reveal prose-seo max-w-[74ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={cat.description2Html} />
+      </div>
+    </section>
+  )}
+
+  {cat.productLineupHtml && (
+    <section class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10">
+      <h2 class="display-sub text-lg">Product lineup</h2>
+      <div class="reveal prose-seo mt-6 max-w-[74ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={cat.productLineupHtml} />
+    </section>
+  )}
 
   <section class="border-t border-line bg-ink text-bg">
     <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">

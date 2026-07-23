@@ -17,12 +17,11 @@ export const SITE = {
   locations: ['Las Vegas', 'Chicago', 'Orlando'],
 };
 
-// Real HubDB catalog, when generated locally (scripts/generate-catalog.mjs).
-// The file is gitignored (client data) — deploys without it fall back to NAV_STATIC.
-const _hubdbModules = import.meta.glob('./hubdb.generated.json', { eager: true });
-export const HUBDB = _hubdbModules['./hubdb.generated.json']?.default || null;
-
-const NAV_STATIC = [
+// Hand-built menu — deploy/build-time fallback when the categories
+// collection is empty (e.g. no .hubdb-cache/ present). Real nav is built
+// from the categories collection via buildNavFromCategories (see
+// src/lib/hubdb/nav.js), consumed by Header/Footer/homepage.
+export const NAV_STATIC = [
   {
     label: 'Audio Visual',
     id: 'av',
@@ -204,28 +203,7 @@ const NAV_STATIC = [
   },
 ];
 
-// Prefer the real HubDB tree; keep hand-built menu as deploy fallback.
-export const NAV = HUBDB
-  ? HUBDB.nav.map((d) => ({
-      ...d,
-      categories: d.categories.map((c) => ({
-        ...c,
-        img: c.img || null,
-        subs: c.subs.length ? c.subs : [{ name: c.name, slug: c.slug }],
-      })),
-    }))
-  : NAV_STATIC;
-
 // Camera Rentals category — real fleet items
-export const CAMERA_SUBCATS = [
-  { name: 'Studio & 4K', filter: 'studio' },
-  { name: 'PTZ', filter: 'ptz' },
-  { name: 'Camcorders', filter: 'camcorder' },
-  { name: 'POV & 360°', filter: 'pov' },
-  { name: 'Lenses', filter: 'lens' },
-  { name: 'Support & Control', filter: 'support' },
-];
-
 export const CAMERA_PRODUCTS = [
   {
     sku: 'AK-UC4000',
@@ -396,7 +374,7 @@ export const CLIENTS = [
 ];
 
 // Rewrite internal slugs/images through the base-aware helper once, at module load
-NAV.forEach((division) =>
+NAV_STATIC.forEach((division) =>
   division.categories.forEach((cat) => {
     cat.slug = u(cat.slug);
     cat.img = u(cat.img);

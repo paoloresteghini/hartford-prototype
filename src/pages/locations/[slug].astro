@@ -1,12 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { SITE, HUBDB, u } from '../../data/catalog.js';
+import { SITE, u } from '../../data/catalog.js';
 
+// Interim Florida sample route — replaced wholesale in Task 6. Astro hoists
+// getStaticPaths into an isolated scope (only imports carry over), so the
+// HUBDB stub must live inside the function, not as a sibling const.
 export function getStaticPaths() {
+  const HUBDB = null;
   if (!HUBDB) return [];
   return HUBDB.locationSamples.map((row) => ({ params: { slug: row.path }, props: { row } }));
 }
+const HUBDB = null;
 
 const { row } = Astro.props;
 const cat = row.matchedCategoryId
