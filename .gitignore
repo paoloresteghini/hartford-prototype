@@ -25,4 +25,5 @@ npm-debug.log*
 # generated from client HubDB mirror (never commit)
 src/data/hubdb.generated.json
 data-quality-report.json
+migration-coverage.md
 .superpowers/
