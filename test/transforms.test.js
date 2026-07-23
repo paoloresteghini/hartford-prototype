@@ -50,6 +50,9 @@ describe('location helpers', () => {
     expect(stateNameFromRow('Audio Visual and Technology Rentals in Florida')).toBe('Florida');
     expect(stateNameFromRow('Florida')).toBe('Florida');
   });
+  it('strips state name prefix with leading/trailing whitespace', () => {
+    expect(stateNameFromRow('  Audio Visual and Technology Rentals in Connecticut')).toBe('Connecticut');
+  });
   it('derives city token from path', () => {
     expect(cityToken('orlando-fl-audio-visual-equipment-rental')).toBe('orlando-fl');
     expect(cityToken('washington-dc-audio-visual-rental')).toBe('washington-dc');

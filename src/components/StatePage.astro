@@ -13,13 +13,7 @@ interface Props {
 
 const { row, cityList, categoryIndex } = Astro.props;
 
-// Upstream `location` table names are inconsistent: most rows carry the bare
-// state name ("Florida"), but ~10 still have the full page-title string
-// leaking through (sometimes with leading whitespace, which defeats the
-// collection-layer stripHtml-style regex). Normalize defensively here rather
-// than special-case individual states.
-const cleanName = (row.name || '').replace(/^\s*Audio Visual and Technology Rentals in\s*/i, '').trim() || row.name;
-const displayH1 = `${cleanName} Audio Visual & Technology Rentals`;
+const displayH1 = `${row.name} Audio Visual & Technology Rentals`;
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -27,14 +21,14 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
     { '@type': 'ListItem', position: 2, name: 'Locations', item: `${SITE.url}/locations/` },
-    { '@type': 'ListItem', position: 3, name: cleanName, item: `${SITE.url}${row.url}` },
+    { '@type': 'ListItem', position: 3, name: row.name, item: `${SITE.url}${row.url}` },
   ],
 };
 ---
 
 <Base
   title={`${displayH1} | Hartford Technology Rentals`}
-  description={`Audio visual and technology equipment rentals across ${cleanName} — fast delivery, on-site setup, and 24/7 support.`}
+  description={`Audio visual and technology equipment rentals across ${row.name} — fast delivery, on-site setup, and 24/7 support.`}
   schema={[breadcrumbSchema]}
 >
   <section class="border-b border-line">
@@ -43,7 +37,7 @@ const breadcrumbSchema = {
         <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-ink-3">
           <li><a href={u('/')} class="link-draw hover:text-ink">Home</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" class="text-ink">{cleanName}</li>
+          <li aria-current="page" class="text-ink">{row.name}</li>
         </ol>
       </nav>
 
@@ -63,7 +57,7 @@ const breadcrumbSchema = {
         </div>
         {row.image && (
           <div class="reveal-img relative hidden min-h-[280px] overflow-hidden lg:block">
-            <img src={row.image} alt={cleanName} class="absolute inset-0 h-full w-full object-cover" />
+            <img src={row.image} alt={row.name} class="absolute inset-0 h-full w-full object-cover" />
           </div>
         )}
       </div>
@@ -72,7 +66,7 @@ const breadcrumbSchema = {
 
   {cityList.length > 0 && (
     <section class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10 lg:py-16">
-      <h2 class="display-sub text-lg">Cities we serve in {cleanName}</h2>
+      <h2 class="display-sub text-lg">Cities we serve in {row.name}</h2>
       <div class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
         {cityList.map((city) => (
           <a href={u(city.url)} class="group block border border-line bg-bg transition-colors hover:border-ink">
@@ -91,7 +85,7 @@ const breadcrumbSchema = {
   {categoryIndex.length > 0 && (
     <section class="border-t border-line bg-surface/60">
       <div class="mx-auto max-w-[1440px] px-5 py-12 lg:px-10 lg:py-16">
-        <h2 class="display-sub text-lg">Rentals available across {cleanName}</h2>
+        <h2 class="display-sub text-lg">Rentals available across {row.name}</h2>
         <ul class="mt-6 grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2">
           {categoryIndex.map((c) => (
             <li>
@@ -109,7 +103,7 @@ const breadcrumbSchema = {
     <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
       <div>
         <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Same-day response on every request</p>
-        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Technology rentals across {cleanName}, sorted</h2>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Technology rentals across {row.name}, sorted</h2>
       </div>
       <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
         Review quote list

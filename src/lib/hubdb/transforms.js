@@ -24,7 +24,7 @@ export const categoryHref = (cat) =>
   `/${cat.division === 'av' ? 'audio' : 'computing'}/${cat.slug}/`;
 
 export const stateNameFromRow = (name) =>
-  (name || '').replace(/^Audio Visual and Technology Rentals in /i, '').trim();
+  (name || '').replace(/^\s*Audio Visual and Technology Rentals in\s*/i, '').trim();
 
 export const cityToken = (path) =>
   (path || '').replace(/-audio-visual(-equipment)?-rental$/i, '');
