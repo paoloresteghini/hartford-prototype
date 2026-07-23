@@ -61,7 +61,7 @@ const breadcrumbSchema = {
       </nav>
 
       <div class="grid gap-10 pb-14 pt-10 lg:grid-cols-2 lg:gap-16">
-        <div class="reveal-img relative overflow-hidden border border-line bg-white">
+        <div class="reveal-img relative self-start overflow-hidden border border-line bg-white lg:sticky lg:top-28">
           {product.image ? (
             <img src={product.image} alt={product.imageAlt} class="aspect-square w-full object-contain p-10" width="800" height="800" />
           ) : (
@@ -73,7 +73,7 @@ const breadcrumbSchema = {
         <div>
           <p class="mono-label text-ink-3">{cat ? cat.name : 'Rental fleet'}</p>
           <h1 class="display mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)]">{product.name}</h1>
-          {product.blurb && <p class="mt-5 max-w-[58ch] text-base leading-relaxed text-ink-2">{product.blurb}</p>}
+          {!product.contentHtml && product.blurb && <p class="mt-5 max-w-[58ch] text-base leading-relaxed text-ink-2">{product.blurb}</p>}
           <div class="mt-8 flex flex-wrap items-center gap-5">
             <button
               type="button"
@@ -87,22 +87,36 @@ const breadcrumbSchema = {
             </button>
             <a href={SITE.phoneHref} class="mono-label link-draw text-ink-2">{SITE.phone} · 24/7</a>
           </div>
-          <ul class="mt-10 space-y-2 border-t border-line pt-6 text-sm text-ink-2">
-            <li class="flex gap-3"><span class="tally mt-1.5" aria-hidden="true"></span>QC’d by manufacturer-trained technicians before every rental</li>
-            <li class="flex gap-3"><span class="tally mt-1.5" aria-hidden="true"></span>Nationwide overnight shipping, both ways</li>
-            <li class="flex gap-3"><span class="tally mt-1.5" aria-hidden="true"></span>Daily, weekly and monthly terms — business &amp; education only</li>
-          </ul>
+          {product.contentHtml && (
+            <div class="mt-10 border-t border-line pt-6">
+              <h2 class="display-sub text-sm">Details</h2>
+              <div class="prose-seo mt-4 max-w-[58ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={product.contentHtml} />
+            </div>
+          )}
         </div>
       </div>
     </div>
   </section>
 
-  {product.contentHtml && (
-    <section class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10">
-      <h2 class="display-sub text-lg">Details</h2>
-      <div class="prose-seo mt-6 max-w-[74ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={product.contentHtml} />
-    </section>
-  )}
+  <section class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10">
+    <div class="grid gap-px border border-line bg-line sm:grid-cols-3">
+      <div class="bg-bg p-8">
+        <span class="tally" aria-hidden="true"></span>
+        <p class="display-sub mt-4 text-sm">Bench-checked, every time</p>
+        <p class="mt-2 text-sm leading-relaxed text-ink-2">QC’d by manufacturer-trained technicians before every rental leaves the depot.</p>
+      </div>
+      <div class="bg-bg p-8">
+        <span class="tally" aria-hidden="true"></span>
+        <p class="display-sub mt-4 text-sm">Nationwide overnight</p>
+        <p class="mt-2 text-sm leading-relaxed text-ink-2">Overnight shipping to any venue in the country — both ways, packed and labeled.</p>
+      </div>
+      <div class="bg-bg p-8">
+        <span class="tally" aria-hidden="true"></span>
+        <p class="display-sub mt-4 text-sm">Flexible terms</p>
+        <p class="mt-2 text-sm leading-relaxed text-ink-2">Daily, weekly and monthly terms — business &amp; education rentals only.</p>
+      </div>
+    </div>
+  </section>
 
   <section class="border-t border-line bg-ink text-bg">
     <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
