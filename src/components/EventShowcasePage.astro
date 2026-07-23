@@ -1,0 +1,199 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from './ProductCard.astro';
+import { SITE, u } from '../data/catalog.js';
+import { parseEventBody, parsePillars } from '../lib/hubdb/event-showcase.js';
+
+const { page, config, categories, products } = Astro.props;
+
+const heroImage = config.heroImage
+  ? u(config.heroImage)
+  : (page.introHtml.match(/src="([^"]+)"/) || [])[1] || null;
+const heroAlt = config.heroAlt || 'Event technology set up across a venue';
+const sections = parseEventBody(page.bodyHtml);
+
+const intro = sections[0] || { heading: page.h1, html: '' };
+const whySection = sections.find((s) => /why|choose/i.test(s.heading));
+const conclusion = sections.find((s) => /conclusion/i.test(s.heading));
+const pillars = whySection ? parsePillars(whySection.html) : [];
+const whyProse = whySection ? whySection.html.split(/<h3>/i)[0] : '';
+const conclusionProse = conclusion ? conclusion.html : '';
+
+const catBySlug = new Map(categories.map((c) => [c.slug, c]));
+const productById = new Map(products.map((p) => [p.id, p]));
+
+// Resolve each configured zone against the parsed sections + live catalog.
+const zones = config.zones
+  .map((z) => {
+    const section = sections.find((s) => z.match.test(s.heading));
+    if (!section) return null;
+    const cats = z.cats.map((slug) => catBySlug.get(slug)).filter(Boolean);
+    const items = cats
+      .map((cat) => {
+        const p = cat.productIds.map((id) => productById.get(id)).find((x) => x && x.image);
+        if (!p) return null;
+        return {
+          sku: p.id,
+          brand: '',
+          name: p.name.replace(/\s*Rentals?$/i, ''),
+          img: p.image,
+          blurb: p.blurb,
+          type: 'all',
+          typeLabel: cat.name,
+          href: u(p.url),
+          featured: false,
+        };
+      })
+      .filter(Boolean);
+    return { ...z, section, cats, items };
+  })
+  .filter(Boolean);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: page.h1, item: `${SITE.url}${page.url}` },
+  ],
+};
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: page.h1,
+  description: page.metaDescription,
+  url: `${SITE.url}${page.url}`,
+  provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  areaServed: 'US',
+  serviceType: 'Event technology equipment rental',
+};
+---
+
+<Base title={page.title || page.h1} description={page.metaDescription} schema={[breadcrumbSchema, serviceSchema]}>
+  <!-- ============ HERO — control room ============ -->
+  <section class="border-b border-line bg-paper-dark text-bg">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:px-10 lg:pb-20 lg:pt-16">
+      <div class="flex flex-col justify-center">
+        <p class="mono-label flex items-center gap-2 text-muted-dark">
+          <span class="tally" aria-hidden="true"></span>Event production · Nationwide
+        </p>
+        <h1 class="display mt-5 text-[clamp(2.25rem,5.5vw,4.5rem)]">
+          Best event equipment rentals
+        </h1>
+        <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-muted-dark lg:text-lg">
+          {page.metaDescription}
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-5">
+          <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+            Build your event quote
+          </button>
+          <a href={SITE.phoneHref} class="mono-label link-draw text-muted-dark">{SITE.phone} · 24/7</a>
+        </div>
+        <ul class="mt-12 grid grid-cols-3 gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 text-center">
+          {[['3', 'Depot cities'], ['24/7', 'On-call technicians'], ['50', 'States served']].map(([n, label]) => (
+            <li class="bg-paper-dark px-3 py-4">
+              <p class="font-mono text-xl font-medium">{n}</p>
+              <p class="mono-label mt-1.5 text-muted-dark">{label}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {heroImage && (
+        <div class="reveal-img relative min-h-[280px] overflow-hidden lg:min-h-[420px]">
+          <img
+            src={heroImage}
+            alt={heroAlt}
+            class="absolute inset-0 h-full w-full object-cover"
+            width="960" height="640"
+            fetchpriority="high"
+          />
+          <p class="mono-label absolute bottom-4 left-4 bg-ink px-2.5 py-1.5 text-bg">Full-venue kit · One quote</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="border-b border-line">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 py-14 lg:grid-cols-[1fr_1.4fr] lg:gap-20 lg:px-10 lg:py-20">
+      <h2 class="display reveal text-[clamp(1.65rem,3.2vw,2.5rem)]">{intro.heading}</h2>
+      <div class="prose-seo reveal max-w-[68ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={intro.html} />
+    </div>
+  </section>
+
+  <!-- ============ VENUE ZONES ============ -->
+  {zones.map((zone, i) => (
+    <section class={`border-b border-line ${i % 2 === 1 ? 'bg-surface/60' : ''}`}>
+      <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
+        <div class={`grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16 ${i % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
+          <div class="lg:[direction:ltr]">
+            <p class="mono-label reveal flex items-center gap-2 text-ink-3">
+              <span class="tally" aria-hidden="true"></span>{zone.label}
+            </p>
+            <h2 class="display-sub reveal mt-4 text-[clamp(1.35rem,2.6vw,1.9rem)] text-ink">{zone.section.heading}</h2>
+            <div class="prose-seo reveal mt-6 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={zone.section.html} />
+            <div class="reveal mt-8 flex flex-wrap gap-2">
+              {zone.cats.map((cat) => (
+                <a href={u(cat.url)} class="border border-line bg-bg px-4 py-2 text-sm font-medium transition-colors hover:border-ink">
+                  {cat.name} →
+                </a>
+              ))}
+            </div>
+          </div>
+          <div class="lg:[direction:ltr]">
+            <div class="grid grid-cols-2 gap-3">
+              {zone.items.map((p, j) => (
+                <div class="reveal">
+                  <ProductCard product={p} eager={i === 0 && j < 2} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ============ WHY HARTFORD — dark pillars ============ -->
+  {whySection && (
+    <section class="border-b border-line bg-paper-dark text-bg">
+      <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
+        <div class="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+          <h2 class="display reveal max-w-xl text-[clamp(1.75rem,4vw,3rem)]">{whySection.heading}</h2>
+          <div class="prose-seo reveal self-center text-[0.9375rem] leading-relaxed text-muted-dark [&_strong]:text-bg" set:html={whyProse} />
+        </div>
+        {pillars.length > 0 && (
+          <ul class="mt-12 grid gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((p) => (
+              <li class="reveal bg-paper-dark p-7 lg:p-8">
+                <p class="display-sub text-base">{p.title}</p>
+                <p class="mt-3 text-sm leading-relaxed text-muted-dark">{p.text}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- ============ CONCLUSION + CTA ============ -->
+  <section class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+      <h2 class="display-sub reveal text-lg text-ink">Run the whole event on one quote</h2>
+      <div class="prose-seo reveal max-w-[68ch] text-[0.9375rem] leading-relaxed text-ink-2" set:html={conclusionProse} />
+    </div>
+  </section>
+
+  <section class="border-t border-line bg-ink text-bg">
+    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
+      <div>
+        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Same-day response on every request</p>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Spec your event package</h2>
+      </div>
+      <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+        Review quote list
+      </button>
+    </div>
+  </section>
+</Base>
