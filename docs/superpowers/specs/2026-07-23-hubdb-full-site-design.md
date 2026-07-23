@@ -53,7 +53,7 @@ Zod schemas per collection: build fails loudly, naming table/column, if HubDB sh
 
 ## 2. URLs & routes
 
-Mirror the live site. **First implementation step: fetch `hartfordrents.com/sitemap.xml` (public web — not the HubSpot API) and confirm every pattern below.**
+**Post-brainstorm discovery (2026-07-23):** live hartfordrents.com is still the **old WordPress site** (3,509 city-first `/locations/` pages, WooCommerce `/product/` slugs identical to HubDB's, Yoast sitemaps). HubDB holds the **new** site's intended structure. So URL authority = HubDB `path` + `category_url` with live-site prefixes (`/product/`, `/locations/`), and "sitemap parity" becomes a **migration-coverage report**: live WP URLs vs new-build URLs — exact matches (products ≈ 100%), changed slugs needing redirects (locations), net-new pages. Live URL lists saved as fixtures in `scripts/data/wp-live-*.txt`.
 
 | Content | Route | Source of truth |
 |---|---|---|
