@@ -1,5 +1,9 @@
 { "results": [
   { "id": 3001, "path": "audio-rental", "name": "Audio Rental",
     "values": { "name": "Audio Rental", "description_1": "<p>Top rich content</p>",
-      "meta_description": "top meta", "feature_image": { "url": "https://img/audio-top.jpg" } } }
+      "description_2": "<p>Top secondary content</p>",
+      "meta_description": "top meta", "feature_image": { "url": "https://img/audio-top.jpg" },
+      "column_heading_1": "<h2>Column One</h2>", "column_image_1": { "url": "https://img/col1.jpg" },
+      "description_column_1": "<p>Column one description</p>",
+      "column_heading_2": "<h2>Column Two</h2>", "column_description_2": "<p>Column two description</p>" } }
 ] }

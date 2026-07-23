@@ -33,6 +33,41 @@ const isDivisionLanding = (categoryUrl) => {
 const looksLikeStatePage = (row) =>
   stateNameFromRow(row.values.name || '') !== (row.values.name || '').trim();
 
+// The real `location` (state) table's `path` is garbled for most rows (e.g.
+// "httpshartfordrents.comlocationsflorida"). Each row's location_detail FK
+// points at its location_country row, whose `path` is the clean state slug
+// ("florida") -- prefer that; fall back to stripping the known garbled
+// prefix; final fallback is the raw path.
+const GARBLED_STATE_PREFIX = /^httpshartfordrents\.comlocations/;
+const deriveStatePath = (row, cityRowById) => {
+  const fkId = fkIds(row.values.location_detail)[0];
+  const target = fkId && cityRowById.get(fkId);
+  if (target && target.path) return target.path;
+  return GARBLED_STATE_PREFIX.test(row.path)
+    ? row.path.replace(GARBLED_STATE_PREFIX, '')
+    : row.path;
+};
+
+// Category "top" tables (audio_visiual_rental_catg / computing_rentals) model
+// a 4-column feature grid via column_heading_N/column_image_N/
+// column_description_N. Column 1 has no column_description_1 field in either
+// table -- its description lives in description_column_1 instead.
+const buildColumns = (values) => {
+  const cols = [];
+  for (let n = 1; n <= 4; n++) {
+    const heading = stripHtml(values[`column_heading_${n}`] || '');
+    const image = imageUrl(values[`column_image_${n}`]);
+    const rawDescription =
+      n === 1
+        ? values.column_description_1 || values.description_column_1 || ''
+        : values[`column_description_${n}`] || '';
+    const description = stripHtml(rawDescription);
+    if (!heading && !image && !description) continue;
+    cols.push({ heading, image, description });
+  }
+  return cols;
+};
+
 export function buildCatalog(cacheDir) {
   if (!cacheDir || !fs.existsSync(cacheDir)) return null;
 
@@ -63,10 +98,13 @@ export function buildCatalog(cacheDir) {
     name: stripHtml(r.values[nameKey] || r.name),
     level, // 'top' | 'mid'
     division,
+    topId: null, // filled below for mid cats
     image: imageUrl(r.values.feature_image) || imageUrl(r.values.img) || imageUrl(r.values.image),
     metaDescription: r.values.meta_description || '',
-    description: r.values.description_1 || r.values.description || '',
-    topId: null, // filled below for mid cats
+    descriptionHtml: r.values.description_1 || r.values.description || '',
+    description2Html: r.values.description_2 || '',
+    productLineupHtml: r.values.product_lineup || '',
+    columns: buildColumns(r.values),
     productIds: [], // filled below
   });
 
@@ -120,7 +158,11 @@ export function buildCatalog(cacheDir) {
   const products = new Map();
   for (const r of avProducts) {
     if (!r.path || !(r.values.name || r.name)) {
-      issues.skippedProducts.push(String(r.id));
+      issues.skippedProducts.push({
+        table: 'audio_visual_rental_',
+        id: String(r.id),
+        reason: !r.path ? 'missing path' : 'missing name',
+      });
       continue;
     }
     const p = mkProduct(r, 'av');
@@ -132,7 +174,11 @@ export function buildCatalog(cacheDir) {
   }
   for (const r of cProducts) {
     if (!r.path || !(r.values.name || r.name)) {
-      issues.skippedProducts.push(String(r.id));
+      issues.skippedProducts.push({
+        table: 'computing_rentals_sub_catg',
+        id: String(r.id),
+        reason: !r.path ? 'missing path' : 'missing name',
+      });
       continue;
     }
     const p = mkProduct(r, 'computing');
@@ -188,6 +234,7 @@ export function buildCatalog(cacheDir) {
       }
     }
     return {
+      id: String(r.id),
       path: r.path,
       url: `/locations/${r.path}/`,
       pageName: r.name,
@@ -195,44 +242,54 @@ export function buildCatalog(cacheDir) {
       stateSlug: r.values.state_slug,
       category: r.values.category,
       categorySlug: r.values.category_slug,
-      categoryId,
+      categoryUrl: r.values.category_url || '',
       h1: r.values.h1,
       metaDescription: r.values.meta_description || '',
       introHtml: r.values.intro || '',
       isStateLevel: r.path.endsWith(r.values.state_slug),
+      categoryId,
     };
   });
 
   // ---------- 6. states, cities, event pages ----------
+  const cityRowById = new Map(cityRows.map((r) => [String(r.id), r]));
+
   const cities = cityRows
     .filter((r) => r.path && !looksLikeStatePage(r))
     .map((r) => ({
       id: String(r.id),
       path: r.path,
-      token: cityToken(r.path),
+      url: `/locations/${r.path}/`,
       name: stripHtml(r.values.name || r.name),
+      cityToken: cityToken(r.path),
       metaDescription: r.values.meta_description || '',
       image: imageUrl(r.values.image) || imageUrl(r.values.img),
+      image2: imageUrl(r.values.image2),
       contentHtml: r.values.content || '',
+      descriptionHtml: r.values.description || '',
+      iframeHtml: r.values.iframe || '',
     }));
   const cityIdSet = new Set(cities.map((c) => c.id));
 
-  const states = stateRows.map((r) => ({
-    id: String(r.id),
-    slug: r.path,
-    name: stateNameFromRow(r.name),
-    image: imageUrl(r.values.image),
-    contentHtml: r.values.content || '',
-    cityIds: fkIds(r.values.location_dropdown).filter((id) => cityIdSet.has(id)),
-  }));
+  const states = stateRows.map((r) => {
+    const statePath = deriveStatePath(r, cityRowById);
+    return {
+      id: String(r.id),
+      path: statePath,
+      url: `/locations/${statePath}/`,
+      name: stateNameFromRow(r.name),
+      image: imageUrl(r.values.image),
+      contentHtml: r.values.content || '',
+      cityIds: fkIds(r.values.location_dropdown).filter((id) => cityIdSet.has(id)),
+    };
+  });
 
   const eventPages = eventRows.map((r) => ({
     id: String(r.id),
     path: r.path,
-    url: `/services/${r.path}/`,
-    name: r.name,
-    title: r.values.title || r.name,
+    url: `/${r.path}/`,
     h1: r.values.h1,
+    title: r.values.title || r.name,
     metaDescription: r.values.meta_description || '',
     introHtml: r.values.intro || '',
     bodyHtml: r.values.body || '',

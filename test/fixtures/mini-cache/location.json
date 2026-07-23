@@ -3,5 +3,12 @@
     "values": { "name": "Audio Visual and Technology Rentals in Teststate",
       "image": { "url": "https://img/teststate.jpg" },
       "content": "<p>state content</p>",
-      "location_dropdown": [ { "id": 8001, "name": "TestCity" }, { "id": 9999, "name": "DanglingCity" } ] } }
+      "location_dropdown": [ { "id": 8001, "name": "TestCity" }, { "id": 9999, "name": "DanglingCity" } ] } },
+  { "id": 7002, "path": "httpshartfordrents.comlocationsflorida",
+    "name": "Audio Visual and Technology Rentals in Florida",
+    "values": { "name": "Audio Visual and Technology Rentals in Florida",
+      "image": { "url": "https://img/florida.jpg" },
+      "content": "<p>florida state content</p>",
+      "location_dropdown": [],
+      "location_detail": [ { "id": 8101, "name": "Audio Visual and Technology Rentals in Florida", "type": "foreignid" } ] } }
 ] }

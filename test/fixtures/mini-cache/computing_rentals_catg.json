@@ -1,6 +1,8 @@
 { "results": [
   { "id": 5001, "path": "computer-rental", "name": "Computer Rental",
     "values": { "title": "Computer Rentals", "description": "<p>Computing mid rich content</p>",
+      "description_2": "<p>Computing mid secondary content</p>",
+      "product_lineup": "<p>Computing mid product lineup</p>",
       "meta_description": "computing mid meta", "img": { "url": "https://img/computer-mid.jpg" },
       "nav_slug": [ { "id": 6001, "name": "computer-rentals-hub" } ],
       "sub_cat": [ { "id": 4001, "name": "laptop-a-rental" } ] } }
