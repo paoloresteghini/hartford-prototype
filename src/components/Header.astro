@@ -124,7 +124,7 @@ const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
             </li>
           ))}
           <li><a href={u('/best-event-equipment-rentals/')} class="px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg">Event Solutions</a></li>
-          <li><a href="#" class="px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg">About</a></li>
+          <li><a href={u('/about/')} class="px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg">About</a></li>
         </ul>
       </nav>
 
@@ -228,7 +228,7 @@ const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
         </details>
       ))}
       <a href={u('/best-event-equipment-rentals/')} class="block border-b border-line py-4 display-sub text-sm">Event Solutions</a>
-      <a href="#" class="block border-b border-line py-4 display-sub text-sm">About</a>
+      <a href={u('/about/')} class="block border-b border-line py-4 display-sub text-sm">About</a>
     </nav>
     <div class="border-t border-line px-5 py-4">
       <a href={SITE.phoneHref} class="mono-label text-ink-2">{SITE.phone} — 24/7 support</a>

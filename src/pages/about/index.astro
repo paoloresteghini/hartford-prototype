@@ -1,0 +1,402 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { SITE, u } from '../../data/catalog.js';
+
+const [products, cities] = await Promise.all([
+  getCollection('products'),
+  getCollection('cities'),
+]);
+const fleetCount = products.length;
+const years = new Date().getFullYear() - 1991;
+
+const depotCity = (token) => cities.find((c) => c.data.cityToken === token)?.data ?? null;
+const depots = [
+  { name: 'Las Vegas', addr: '4065 W Mesa Vista Ave, Suite C', state: 'Nevada', city: depotCity('las-vegas-nv') },
+  { name: 'Arlington Heights', addr: '3 W College Drive', state: 'Illinois · Chicago metro', city: depotCity('chicago-il') },
+  { name: 'Orlando', addr: '9535 Satellite Boulevard, Suite 300', state: 'Florida', city: depotCity('orlando-fl') },
+];
+
+const WP = 'https://hartfordrents.com/wp-content/uploads';
+const team = [
+  { name: 'Anthony R. Graffia', role: 'Co-CEO', bio: 'Certified Public Accountant. Chaired a large Midwest computer-leasing company from 1978 to 2005 before co-founding Hartford.', img: `${WP}/2020/02/pageImage-AnthonyG.jpg` },
+  { name: 'John B. Ward', role: 'Co-CEO', bio: 'Forty-year entrepreneur and founder of five companies. Built Hartford around sales discipline and customer service.', img: `${WP}/2020/02/pageImage-JohnW.jpg` },
+  { name: 'Dan Kallen', role: 'VP of Sales', bio: 'Twenty-plus years in sales and project management, formerly at NBC. President of the International Technology Rental Association.', img: `${WP}/2020/02/pageImage-DanK.jpg` },
+  { name: 'Mark Ferro', role: 'Regional Sales Manager', bio: 'Seventeen years in the rental industry. Opened Hartford’s Washington DC office.', img: `${WP}/2020/02/pageImage-MarkF.jpg` },
+  { name: 'Peter Kutrumanes', role: 'General Manager', bio: 'Eighteen-plus years across IT and AV, formerly an assistant trader at Comdisco.', img: `${WP}/2020/02/pageImage-PeterK.jpg` },
+];
+
+const values = [
+  { title: 'Integrity', text: 'The highest standards of business ethics, on every order and every invoice.' },
+  { title: 'Service excellence', text: 'The level of service we would demand for ourselves — before, during and after the event.' },
+  { title: 'Teamwork', text: 'Shared, collective responsibility for every rental that leaves a depot.' },
+  { title: 'Innovation', text: 'Continuous improvement in the fleet, the process and the technology behind both.' },
+  { title: 'Economic value', text: 'Excellent value for clients while meeting our obligations as a business.' },
+];
+
+const timeline = [
+  { year: '1978', title: 'The roots', text: 'Anthony Graffia begins nearly three decades chairing a large Midwest computer-leasing company — the discipline Hartford is later built on.', img: null },
+  { year: '1991', title: 'Hartford founded', text: 'Two financial guys — Graffia and John Ward, with 80 years of combined business experience — open a technology rental house on a simple conviction: it’s really service that we sell.', img: u('/img/hpx3100.jpg'), alt: 'Broadcast camcorder of the era' },
+  { year: 'Growth', title: 'A national depot network', text: 'Las Vegas and Orlando join the Arlington Heights headquarters — three depots placed to reach any US venue overnight.', img: u('/img/venue.jpg'), alt: 'A packed event venue with staging and projection' },
+  { year: 'Growth', title: 'Washington DC office', text: 'Mark Ferro opens the DC office, putting Hartford beside the country’s densest run of conferences, agencies and associations.', img: null },
+  { year: 'Industry', title: 'Leading the industry', text: 'VP of Sales Dan Kallen serves as President of the International Technology Rental Association.', img: null },
+  { year: 'Today', title: `${fleetCount} products, 50 states`, text: 'Broadcast cameras to badge printers: a fleet spanning 31 rental categories, QC’d by manufacturer-trained technicians and shipped nationwide both ways, backed by 24/7 humans.', img: u('/img/event-solutions.jpg'), alt: 'Keynote projection above a full audience' },
+];
+
+const stats = [
+  { n: years, suffix: '', label: 'Years in rental' },
+  { n: fleetCount, suffix: '', label: 'Products in fleet' },
+  { n: 50, suffix: '', label: 'States served' },
+  { n: null, display: '24/7', label: 'Technical support' },
+];
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About Hartford Technology Rentals',
+  url: `${SITE.url}/about/`,
+  mainEntity: {
+    '@type': 'Organization',
+    name: SITE.legal,
+    url: SITE.url,
+    foundingDate: '1991',
+    founder: [
+      { '@type': 'Person', name: 'Anthony R. Graffia' },
+      { '@type': 'Person', name: 'John B. Ward' },
+    ],
+    slogan: 'Not just equipment',
+    address: depots.map((d) => ({ '@type': 'PostalAddress', streetAddress: d.addr, addressLocality: d.name, addressCountry: 'US' })),
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'About', item: `${SITE.url}/about/` },
+  ],
+};
+---
+
+<Base
+  title="About Hartford Technology Rentals | Est. 1991 — Not Just Equipment"
+  description="Founded in 1991 by two financial guys with 80 years of combined experience, Hartford Technology Rentals grew into a top-5 US AV and computing rental house — three depots, 50 states, 24/7 technicians. It's really service that we sell."
+  schema={[breadcrumbSchema, aboutSchema]}
+>
+  <!-- ============ HERO ============ -->
+  <section class="border-b border-line bg-paper-dark text-bg">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:px-10 lg:pb-20 lg:pt-16">
+      <div class="flex flex-col justify-center">
+        <p class="mono-label flex items-center gap-2 text-muted-dark">
+          <span class="tally" aria-hidden="true"></span>Est. 1991 · Chicago — Las Vegas — Orlando
+        </p>
+        <h1 class="display mt-5 text-[clamp(2.5rem,6vw,5rem)]">Not just equipment</h1>
+        <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-muted-dark lg:text-lg">
+          “Even though we all spend the better part of each day talking, thinking and living
+          technology rental equipment, it’s really service that we sell.”
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-5">
+          <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+            Work with us
+          </button>
+          <a href={SITE.phoneHref} class="mono-label link-draw text-muted-dark">{SITE.phone} · 24/7</a>
+        </div>
+      </div>
+      <div class="reveal-img relative min-h-[280px] overflow-hidden lg:min-h-[400px]">
+        <img
+          src={u('/img/audio-studio.jpg')}
+          alt="A shockmounted studio condenser microphone in a dark control room"
+          class="absolute inset-0 h-full w-full object-cover"
+          width="960" height="640"
+          fetchpriority="high"
+        />
+        <p class="mono-label absolute bottom-4 left-4 bg-ink px-2.5 py-1.5 text-bg">Since 1991 · Business &amp; education only</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STORY ============ -->
+  <section class="border-b border-line">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 py-14 lg:grid-cols-[1fr_1.4fr] lg:gap-20 lg:px-10 lg:py-20">
+      <h2 class="display reveal text-[clamp(1.65rem,3.2vw,2.5rem)]">Two financial guys and a service obsession</h2>
+      <div class="reveal max-w-[66ch] space-y-4 text-[0.9375rem] leading-relaxed text-ink-2">
+        <p>
+          Hartford Technology Rental was founded in 1991 by Anthony R. Graffia and John B. Ward —
+          by their own description, a couple of financial guys. Between them: eighty years of
+          business experience and a shared conviction that technology rental is a service
+          business that happens to ship hardware.
+        </p>
+        <p>
+          That conviction shaped everything that followed. Hartford rents exclusively to
+          businesses, government agencies and school districts, keeps its fleet enterprise-grade,
+          and answers its own phones at 3&nbsp;a.m. Thirty-five years later the model hasn’t
+          changed — only the fleet has.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE ============ -->
+  <section class="border-b border-line bg-surface/60" aria-labelledby="timeline-heading">
+    <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
+      <h2 id="timeline-heading" class="display-sub reveal text-lg text-ink">The signal path · 1991 → today</h2>
+      <ol class="tl mt-10" role="list">
+        {timeline.map((t) => (
+          <li class="tl-item reveal">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <div class="tl-body">
+              <p class="mono-label text-signal">{t.year}</p>
+              <h3 class="display-sub mt-2 text-base text-ink">{t.title}</h3>
+              <p class="mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-ink-2">{t.text}</p>
+            </div>
+            {t.img && (
+              <div class="tl-media reveal-img relative overflow-hidden border border-line">
+                <img src={t.img} alt={t.alt} class="h-full w-full object-cover" loading="lazy" width="520" height="340" />
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ VALUES ============ -->
+  <section class="border-b border-line bg-paper-dark text-bg">
+    <div class="mx-auto max-w-[1440px] px-5 py-16 lg:px-10 lg:py-24">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 class="display reveal max-w-xl text-[clamp(1.75rem,4vw,3rem)]">Five principles, since day one</h2>
+        <p class="mono-label reveal text-muted-dark">The operating standard</p>
+      </div>
+      <ul class="mt-12 grid gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 sm:grid-cols-2 lg:grid-cols-5" role="list">
+        {values.map((v) => (
+          <li class="value-cell reveal bg-paper-dark p-7 lg:p-8" tabindex="0">
+            <span class="tally value-tick" aria-hidden="true"></span>
+            <p class="display-sub mt-4 text-base">{v.title}</p>
+            <p class="value-text mt-3 text-sm leading-relaxed text-muted-dark">{v.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ LEADERSHIP ============ -->
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 class="display reveal text-[clamp(1.65rem,3.2vw,2.5rem)]">The people on the other end of the phone</h2>
+        <p class="mono-label reveal text-ink-3">Leadership</p>
+      </div>
+      <ul class="mt-10 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4" role="list">
+        {team.map((m) => (
+          <li class="team-card reveal border border-line bg-bg">
+            <div class="relative overflow-hidden bg-surface">
+              <img src={m.img} alt={`${m.name}, ${m.role}`} class="team-photo aspect-[4/5] w-full object-cover" loading="lazy" width="440" height="550" />
+            </div>
+            <div class="border-t border-line p-5">
+              <p class="mono-label text-ink-3">{m.role}</p>
+              <h3 class="mt-1.5 text-[0.9375rem] font-semibold">{m.name}</h3>
+              <p class="mt-2 text-sm leading-snug text-ink-3">{m.bio}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ DEPOTS ============ -->
+  <section class="border-b border-line bg-surface/60">
+    <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 class="display-sub reveal text-lg text-ink">Three depots. Any venue, overnight.</h2>
+        <p class="mono-label reveal text-ink-3">Plus a Washington DC office</p>
+      </div>
+      <ul class="mt-8 grid gap-4 md:grid-cols-3" role="list">
+        {depots.map((d) => (
+          <li class="depot-card reveal group relative overflow-hidden border border-line bg-ink text-bg">
+            {d.city?.image && (
+              <img src={d.city.image} alt="" class="depot-img absolute inset-0 h-full w-full object-cover opacity-50" loading="lazy" width="600" height="400" />
+            )}
+            <div class="relative flex min-h-[240px] flex-col justify-end bg-gradient-to-t from-ink via-ink/60 to-transparent p-6">
+              <p class="mono-label flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>{d.state}</p>
+              <h3 class="display-sub mt-2 text-lg">{d.name}</h3>
+              <p class="mt-1.5 font-mono text-xs text-muted-dark">{d.addr}</p>
+              {d.city && (
+                <a href={u(d.city.url)} class="link-draw mt-4 inline-block text-sm font-medium text-bg after:absolute after:inset-0">
+                  Rentals in {d.name} →
+                </a>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ LIVE STATS ============ -->
+  <section class="border-b border-line">
+    <div class="mx-auto grid max-w-[1440px] grid-cols-2 gap-px overflow-hidden border-x border-line bg-line lg:grid-cols-4">
+      {stats.map((s) => (
+        <div class="reveal bg-bg px-6 py-10 text-center lg:py-14">
+          <p class="stat-n font-mono text-3xl font-medium text-ink lg:text-4xl" data-count={s.n ?? undefined}>
+            {s.n === null ? s.display : '0'}
+          </p>
+          <p class="mono-label mt-3 text-ink-3">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="bg-ink text-bg">
+    <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 px-5 py-16 lg:flex-row lg:items-center lg:px-10">
+      <div>
+        <p class="mono-label mb-3 flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Same-day response on every request</p>
+        <h2 class="display text-[clamp(1.75rem,4vw,3rem)]">Put 35 years to work</h2>
+      </div>
+      <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
+        Review quote list
+      </button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------- timeline: ruled spine, tally dots, scroll-drawn progress ---------- */
+  .tl {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding-left: 1.75rem;
+  }
+  .tl::before {
+    content: '';
+    position: absolute;
+    left: 0.3125rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: var(--color-line-dark);
+    opacity: 0.35;
+  }
+  /* progress line draws with scroll where supported; static elsewhere */
+  .tl::after {
+    content: '';
+    position: absolute;
+    left: 0.3125rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: var(--color-signal);
+  }
+  @supports (animation-timeline: view()) {
+    .tl::after {
+      transform-origin: top;
+      animation: tl-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 10% exit 60%;
+    }
+    @keyframes tl-draw {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tl::after { animation: none; transform: none; }
+  }
+  .tl-item {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 1024px) {
+    .tl-item { grid-template-columns: 1.4fr 1fr; align-items: center; }
+    .tl-item:not(:has(.tl-media)) { grid-template-columns: 1fr; max-width: 60%; }
+  }
+  .tl-dot {
+    position: absolute;
+    left: -1.75rem;
+    top: 0.35rem;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 0 3px oklch(from var(--color-signal) l c h / 0.18);
+  }
+  .tl-media { max-height: 300px; aspect-ratio: 16/10; }
+
+  /* ---------- values: tick lights + description raises on hover/focus ---------- */
+  .value-cell { outline: none; transition: background-color 0.25s var(--ease-out-quart); }
+  .value-tick { opacity: 0.25; transition: opacity 0.25s ease; }
+  .value-cell:hover, .value-cell:focus-visible {
+    background-color: oklch(0.24 0.008 260);
+  }
+  .value-cell:hover .value-tick, .value-cell:focus-visible .value-tick { opacity: 1; }
+  .value-cell:focus-visible { outline: 2px solid var(--color-signal); outline-offset: -2px; }
+  @media (min-width: 1024px) {
+    .value-text {
+      opacity: 0.55;
+      transform: translateY(4px);
+      transition: opacity 0.3s var(--ease-out-quart), transform 0.3s var(--ease-out-quart);
+    }
+    .value-cell:hover .value-text, .value-cell:focus-visible .value-text {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ---------- team: monochrome portraits, color on hover ---------- */
+  .team-photo {
+    filter: grayscale(1) contrast(1.05);
+    transition: filter 0.4s var(--ease-out-quart), transform 0.6s var(--ease-out-expo);
+  }
+  .team-card:hover .team-photo, .team-card:focus-within .team-photo {
+    filter: grayscale(0);
+    transform: scale(1.03);
+  }
+
+  /* ---------- depots: image lifts on hover ---------- */
+  .depot-img { transition: opacity 0.35s ease, transform 0.7s var(--ease-out-expo); }
+  .depot-card:hover .depot-img, .depot-card:focus-within .depot-img {
+    opacity: 0.72;
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-photo, .depot-img, .value-text { transition: none; }
+  }
+</style>
+
+<script>
+  // Count-up stats: fires once when the band scrolls into view.
+  // Reduced motion (or no IO) = final values immediately.
+  const els = [...document.querySelectorAll('.stat-n[data-count]')] as HTMLElement[];
+  const setFinal = () => els.forEach((el) => (el.textContent = el.dataset.count ?? ''));
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || !('IntersectionObserver' in window) || els.length === 0) {
+    setFinal();
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          const el = entry.target as HTMLElement;
+          const target = Number(el.dataset.count);
+          const t0 = performance.now();
+          const dur = 1100;
+          const tick = (t: number) => {
+            const p = Math.min(1, (t - t0) / dur);
+            const eased = 1 - Math.pow(1 - p, 4); // ease-out-quart
+            el.textContent = String(Math.round(target * eased));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      },
+      { threshold: 0.4 }
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>
