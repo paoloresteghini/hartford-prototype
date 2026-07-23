@@ -29,13 +29,17 @@ jobs:
           HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
         run: |
           if [ -z "$HUBSPOT_TOKEN" ]; then
-            echo "No HUBSPOT_TOKEN secret — skipping mirror fetch (fallback build)"
-            exit 0
+            echo "::error::HUBSPOT_TOKEN secret missing — refusing to deploy fallback build"
+            exit 1
           fi
           node scripts/fetch-hubdb.mjs
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
+      - name: Run tests
+        run: npm test
+      - name: Verify collection counts
+        run: node scripts/verify-collections.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

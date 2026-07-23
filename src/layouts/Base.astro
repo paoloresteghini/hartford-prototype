@@ -6,7 +6,16 @@ import QuoteDrawer from '../components/QuoteDrawer.astro';
 import { SITE, BASE, u } from '../data/catalog.js';
 
 const { title, description, schema = [], ogImage = '/img/hero-home.jpg' } = Astro.props;
-const canonical = new URL(Astro.url.pathname, SITE.url).href;
+// Strip the deploy-time BASE (e.g. GitHub Pages "/hartford-prototype") so the
+// canonical/og:url always point at the clean production path. BASE ends with
+// a trailing slash (see catalog.js) but Astro.url.pathname for the base root
+// itself may omit it, so compare against the base without its trailing slash.
+const baseNoSlash = BASE.endsWith('/') ? BASE.slice(0, -1) : BASE;
+const canonicalPath =
+  baseNoSlash !== '' && Astro.url.pathname.startsWith(baseNoSlash)
+    ? Astro.url.pathname.slice(baseNoSlash.length) || '/'
+    : Astro.url.pathname;
+const canonical = new URL(canonicalPath, SITE.url).href;
 
 const baseSchema = [
   {

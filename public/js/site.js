@@ -278,7 +278,7 @@
 
     // Full-catalog index: fetched lazily (once) on first search-input focus,
     // rather than embedded inline. Cached in module scope for the page's life.
-    const TYPE_LABEL = { p: 'Product', c: 'Category', l: 'Location' };
+    const TYPE_LABEL = { p: 'Product', c: 'Category', l: 'Location', e: 'Event' };
     let index = [];
     let indexPromise = null;
 
