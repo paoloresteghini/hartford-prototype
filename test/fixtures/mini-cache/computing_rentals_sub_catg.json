@@ -1,0 +1,8 @@
+{ "results": [
+  { "id": 4001, "path": "laptop-a-rental", "name": "Laptop A Rental",
+    "values": { "name": "Laptop A Rental", "description": "<p>Test laptop</p>",
+      "meta_description": "m2", "content": "<p>c2</p>",
+      "feature_image": { "url": "https://img/laptop-a.jpg" },
+      "nav_slug_cat": [ { "id": 5001, "name": "computer-rental" } ],
+      "nav_slug_": [ { "id": 6001, "name": "computer-rentals-hub" } ] } }
+] }

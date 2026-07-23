@@ -1,0 +1,7 @@
+{ "results": [
+  { "id": 7001, "path": "teststate", "name": "Audio Visual and Technology Rentals in Teststate",
+    "values": { "name": "Audio Visual and Technology Rentals in Teststate",
+      "image": { "url": "https://img/teststate.jpg" },
+      "content": "<p>state content</p>",
+      "location_dropdown": [ { "id": 8001, "name": "TestCity" }, { "id": 9999, "name": "DanglingCity" } ] } }
+] }

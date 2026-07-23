@@ -1,0 +1,7 @@
+{ "results": [
+  { "id": 8001, "path": "testcity-fl-audio-visual-equipment-rental",
+    "name": "Audio Visual and Technology Rentals in TestCity, Teststate",
+    "values": { "name": "TestCity", "meta_description": "city meta",
+      "image": { "url": "https://img/testcity.jpg" }, "content": "<p>city content</p>" } },
+  { "id": 8002, "path": "", "name": null, "values": { "name": null } }
+] }

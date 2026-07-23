@@ -1,0 +1,5 @@
+{ "results": [
+  { "id": 6001, "path": "computer-rentals-hub", "name": "Computer Rentals Hub",
+    "values": { "name": "Computer Rentals Hub", "description_1": "<p>Computing top rich content</p>",
+      "meta_description": "computing top meta", "feature_image": { "url": "https://img/computer-top.jpg" } } }
+] }

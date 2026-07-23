@@ -1,0 +1,10 @@
+{ "results": [
+  { "id": 10001, "path": "audio-rental-teststate", "name": "Audio Rentals Teststate",
+    "values": { "meta_description": "state meta", "category_url": "/audio/audio-rental",
+      "state_slug": "teststate", "intro": "<p>state intro</p>", "h1": "Audio Rentals Teststate",
+      "state": "Teststate", "category": "Audio Rentals", "category_slug": "audio-rental" } },
+  { "id": 10002, "path": "laptop-rental-test-fl", "name": "Laptop Rental Test Florida",
+    "values": { "meta_description": "city meta", "category_url": "/computing/computer-rental",
+      "state_slug": "florida", "intro": "<p>city intro</p>", "h1": "Laptop Rental Test Florida",
+      "state": "Florida", "category": "Laptop Rentals", "category_slug": "laptop-rental" } }
+] }

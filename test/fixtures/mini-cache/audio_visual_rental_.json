@@ -1,0 +1,8 @@
+{ "results": [
+  { "id": 1001, "path": "cam-a-rental", "name": "Cam A Rental",
+    "values": { "name": "Cam A Rental", "description": "<p>Test cam</p>",
+      "meta_description": "m", "content": "<p>c</p>",
+      "feature_image": { "url": "https://img/cam-a.jpg" },
+      "nav_slug_cat": [ { "id": 2001, "name": "audio-rental" } ] } },
+  { "id": 1002, "path": null, "name": null, "values": { "name": null } }
+] }
