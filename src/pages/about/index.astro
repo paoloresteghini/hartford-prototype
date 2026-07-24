@@ -43,12 +43,13 @@ const timeline = [
   { year: 'Today', title: `${fleetCount} products, 50 states`, text: 'Broadcast cameras to badge printers: a fleet spanning 31 rental categories, QC’d by manufacturer-trained technicians and shipped nationwide both ways, backed by 24/7 humans.', img: u('/img/event-solutions.jpg'), alt: 'Keynote projection above a full audience' },
 ];
 
-// Hero ledger — the company line, 1978 → today. Last node is "live" (red tally).
+// Hero depot line — geography, not chronology (the timeline lives in the
+// "signal path" section below). Last node is "live" (red tally).
 const ledger = [
-  { year: '1978', label: 'Leasing-desk roots' },
-  { year: '1991', label: 'Hartford founded' },
-  { year: 'Growth', label: 'Three depots · DC office' },
-  { year: 'Today', label: `${fleetCount} products · 50 states`, live: true },
+  { year: 'Chicago', label: '3 W College Drive, Arlington Heights' },
+  { year: 'Las Vegas', label: '4065 W Mesa Vista Ave' },
+  { year: 'Orlando', label: '9535 Satellite Boulevard' },
+  { year: 'Nationwide', label: 'Overnight shipping, both ways', live: true },
 ];
 
 const stats = [
@@ -114,9 +115,9 @@ const breadcrumbSchema = {
 
       <!-- the ledger: 1978 → today, jumps to the full story -->
       <a
-        href="#timeline-heading"
+        href="#depots-heading"
         class="hero-ledger group relative mt-16 block pt-8 lg:mt-24"
-        aria-label="Company timeline, 1978 to today — jump to the full story"
+        aria-label="Three depots, nationwide overnight — jump to depot details"
       >
         <span class="ledger-rule absolute left-0 top-0 hidden h-px w-full origin-left bg-line-dark transition-colors duration-300 group-hover:bg-muted-dark sm:block" aria-hidden="true"></span>
         <span class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
@@ -134,7 +135,7 @@ const breadcrumbSchema = {
             </span>
           ))}
           <span class="mono-label pointer-events-none absolute -top-8 right-0 hidden -translate-y-1/2 items-center gap-2 text-muted-dark opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:flex">
-            Full story ↓
+            The depots ↓
           </span>
         </span>
       </a>
@@ -233,7 +234,7 @@ const breadcrumbSchema = {
   <section class="border-b border-line bg-surface/60">
     <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
       <div class="flex flex-wrap items-end justify-between gap-6">
-        <h2 class="display-sub reveal text-lg text-ink">Three depots. Any venue, overnight.</h2>
+        <h2 id="depots-heading" class="display-sub reveal scroll-mt-28 text-lg text-ink">Three depots. Any venue, overnight.</h2>
         <p class="mono-label reveal text-ink-3">Plus a Washington DC office</p>
       </div>
       <ul class="mt-8 grid gap-4 md:grid-cols-3" role="list">
