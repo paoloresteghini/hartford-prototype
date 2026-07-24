@@ -159,8 +159,26 @@ const NAV = cats.length ? buildNavFromCategories(cats, products) : NAV_STATIC;
               </div>
             </li>
           ))}
-          <li><a href={u('/best-event-equipment-rentals/')} class="px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg">Event Solutions</a></li>
-          <li><a href={u('/about/')} class="px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg">About</a></li>
+          <li class="nav-group relative" data-nav-group>
+            <button
+              type="button"
+              class="flex items-center gap-1.5 px-4 py-2 text-[0.9375rem] font-medium text-bg/90 transition-colors hover:text-bg"
+              aria-expanded="false"
+              aria-haspopup="true"
+              data-nav-toggle
+            >
+              About
+              <svg class="chev h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" />
+              </svg>
+            </button>
+            <div class="nav-drop text-ink">
+              <a href={u('/about/')} class="block px-5 py-2.5 text-[0.9375rem] font-medium text-ink-2 transition-colors hover:bg-surface hover:text-ink">About HTR</a>
+              <a href={u('/contact-htr/')} class="block px-5 py-2.5 text-[0.9375rem] font-medium text-ink-2 transition-colors hover:bg-surface hover:text-ink">Contact</a>
+              <a href={u('/careers/')} class="block px-5 py-2.5 text-[0.9375rem] font-medium text-ink-2 transition-colors hover:bg-surface hover:text-ink">Careers</a>
+              <a href={u('/best-event-equipment-rentals/')} class="block px-5 py-2.5 text-[0.9375rem] font-medium text-ink-2 transition-colors hover:bg-surface hover:text-ink">Event Solutions</a>
+            </div>
+          </li>
         </ul>
       </nav>
 
@@ -263,8 +281,20 @@ const NAV = cats.length ? buildNavFromCategories(cats, products) : NAV_STATIC;
           </div>
         </details>
       ))}
-      <a href={u('/best-event-equipment-rentals/')} class="block border-b border-line py-4 display-sub text-sm">Event Solutions</a>
-      <a href={u('/about/')} class="block border-b border-line py-4 display-sub text-sm">About</a>
+      <details class="faq border-b border-line">
+        <summary class="flex items-center justify-between py-4">
+          <span class="display-sub text-sm">About</span>
+          <svg class="faq-icon h-4 w-4 text-ink-3" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.4"/></svg>
+        </summary>
+        <div class="faq-body">
+          <div class="pb-2 pl-3">
+            <a href={u('/about/')} class="block py-2 text-[0.9375rem] text-ink-2">About HTR</a>
+            <a href={u('/contact-htr/')} class="block py-2 text-[0.9375rem] text-ink-2">Contact</a>
+            <a href={u('/careers/')} class="block py-2 text-[0.9375rem] text-ink-2">Careers</a>
+            <a href={u('/best-event-equipment-rentals/')} class="block py-2 text-[0.9375rem] text-ink-2">Event Solutions</a>
+          </div>
+        </div>
+      </details>
     </nav>
     <div class="border-t border-line px-5 py-4">
       <a href={SITE.phoneHref} class="mono-label text-ink-2">{SITE.phone} — 24/7 support</a>

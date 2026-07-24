@@ -12,7 +12,7 @@ export const SITE = {
   legal: 'Hartford Technology Rental Company, LLC',
   phone: '888-520-5667',
   phoneHref: 'tel:+18885205667',
-  email: 'rentals@hartfordrents.com',
+  email: 'webmaster@hartfordrents.com',
   url: 'https://hartfordrents.com',
   locations: ['Las Vegas', 'Chicago', 'Orlando'],
 };

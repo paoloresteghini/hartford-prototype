@@ -1,0 +1,487 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE } from '../../data/catalog.js';
+
+// Live /careers/ copy, verbatim.
+const intro =
+  'If you’re interested in growing and advancing your career in the information technology industry, we’d like to meet you. Our team environment is a great place for you to be part of something that you help create. We’ll provide the support and resources you need to be successful.';
+const benefitsLine =
+  'Besides working with the latest technology, we offer competitive salaries and a comprehensive benefits plan that includes; medical, dental, paid time off, paid holidays, 401K and more.';
+const locationsLine = 'We have offices in Chicago, Los Angeles, New York and Washington, DC that have immediate needs.';
+
+const benefits = ['Medical', 'Dental', 'Paid time off', 'Paid holidays', '401K', 'And more'];
+
+const roles = [
+  {
+    title: 'Audio Visual Technician',
+    summary: 'In this role you will check, maintain and prepare audio visual equipment.',
+    context: [],
+    duties: [
+      'Check in and out equipment and packages',
+      'Diagnose, log, and repair items that do not pass QC',
+      'Assemble and configure equipment racks for client delivery',
+      'Manage firmware versions for applicable devices',
+      'Organize and store tested equipment',
+      'Ensure equipment is presentable and in ideal working condition before going to clients',
+      'Ability to handle hard deadlines and plan workflow depending on client needs',
+      'Assists other departments when necessary',
+      'Maintain a safe, organized, and clean work environment to ensure safety',
+      'Assist in creating and following QC processes',
+      'Work some weekend and after-hours as needed',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'Any combination of education, experience and training equivalent to graduation from high school or a GED',
+      'At least 3 years’ experience working with audio, broadcast and video equipment',
+      'High attention to detail and organizational skills',
+      'Must be able to lift sixty pounds',
+      'Strong work ethic',
+      'Proficient with MS-Office suite',
+    ],
+  },
+  {
+    title: 'Warehouse Associate',
+    summary:
+      'We are looking for a warehouse associate to participate in our warehouse operations and activities. Warehouse associate responsibilities include storing materials, picking, packing and scanning orders. The goal is to increase efficiency, profitability and customer satisfaction.',
+    context: [
+      'Warehouse associates who learn quickly take direction, and exhibit the traits of a successful team member will receive opportunities for advancement within the company. All warehouse team members work in multiple areas of the warehouse as needed.',
+    ],
+    duties: [
+      'Prepare and complete orders for delivery or pickup according to schedule (load, pack, wrap, label, ship)',
+      'Receive and process warehouse stock products (pick, unload, label, store)',
+      'Perform inventory controls and keep quality standards high for audits',
+      'Keep a clean and safe working environment and optimize space utilization',
+      'Check for missing equipment and report any discrepancies',
+      'Communicate and cooperate with supervisors and coworkers',
+      'Operate and maintain warehouse vehicles and equipment',
+      'Follow quality service standards and comply with procedures, rules and regulations',
+      'Work some weekend and after-hours as needed',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'Any combination of education, experience and training equivalent to graduation from high school or a GED',
+      'Must be able to lift sixty pounds',
+      'Strong work ethic',
+      'Excellent communication skills',
+    ],
+  },
+  {
+    title: 'Delivery Driver',
+    summary: 'In this role you will spend your time delivering, installing and picking up a wide array of technology equipment to and from our customers.',
+    context: [
+      'Delivery drivers who learn quickly take direction, and exhibit the traits of a successful team member will receive opportunities for advancement within the company.',
+    ],
+    duties: [
+      'Excellent customer service skills',
+      'Flexible approach to different tasks',
+      'Driving a box van and/or Sprinter',
+      'Communicating from the road with management as needed',
+      'Learn specifics of our regular delivery locations',
+      'Learn to scan equipment in/out of our rental system',
+      'Helping to maintain our fleet of vehicles with safety checks and prompt reporting of any issues',
+      'Check for missing equipment and report on findings',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'Any combination of education, experience and training equivalent to graduation from high school or a GED',
+      'Must be able to lift sixty pounds',
+      'Strong work ethic',
+      'Excellent communication skills',
+      'Must be willing and able to work paid overtime with little or no notice to meet customer requirements (evenings or weekends)',
+      'Age 21 or older',
+      'Valid driver’s license and driving record that meets company standards',
+    ],
+  },
+  {
+    title: 'Account Manager',
+    summary: 'We are looking for a motivated, flexible and enthusiastic individual to develop and manage an array of accounts.',
+    context: [
+      'You are hardworking and eager to both learn and share knowledge with others and you work well in a team. You enjoy going out to meet new people and your persuasive manner makes customers feel assured that they will get the best possible result. You feel confident working to targets and you strive to go far beyond them. You take pride in your work, manage your time efficiently and you challenge yourself to deliver the very best solutions. You also have good spoken and written communication skills and present yourself professionally. You can identify potential opportunities and can pursue these in line with our tone of voice and branding guidelines.',
+    ],
+    duties: [
+      'Develop, grow and manage a portfolio of accounts',
+      'Achieving sales targets',
+      'Maintain and develop customer relationships',
+      'Be commercially astute',
+      'Represent the company in the tone of our brand',
+      'Maintain a good level of technical knowledge of the products we carry',
+      'Support and work with other members of Hartford',
+      'Clearly communicate the progress of monthly/quarterly initiatives to management',
+      'Work closely with Sales support team',
+      'Collaborate with sales team to identify and grow opportunities within territory',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'Proven work experience in the IT or AV rental industry',
+      'Solid experience with CRM software and MS Office (particularly MS Excel)',
+      'Experience delivering client-focused solutions to customer needs',
+      'Proven ability to juggle multiple account management projects at a time, while maintaining sharp attention to detail',
+      'Excellent listening, negotiation and presentation abilities',
+      'Strong verbal and written communication skill',
+    ],
+  },
+  {
+    title: 'Customer Service Representative',
+    summary:
+      'A Customer Service Rep will play a fundamental role in achieving our ambitious customer acquisition and revenue growth objectives. You must be comfortable making calls, working with account managers/operations, generating interest, qualifying prospects and closing sales.',
+    context: [],
+    duties: [
+      'Interact with and support account manager’s customers including order processing and follow-ups',
+      'Build sustainable relationships and trust with customers',
+      'Understand customer needs and requirements',
+      'Handle customer issues and provide solutions',
+      'Quote and close provided web leads',
+      'Research prospective customers and generate interest',
+      'Route qualified opportunities to Account Managers',
+      'Meet sales targets',
+      'Follow-up on customer collections',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'At least 2 years proven customer sales support experience',
+      'General AV/computer knowledge',
+      'Excellent verbal and written communications skills',
+      'Strong listening and presentation skills',
+      'Customer orientation and ability to adapt/respond to different types of characters',
+      'Ability to multi-task, prioritize and manage time effectively',
+      'Experience working with CRM',
+    ],
+  },
+  {
+    title: 'Administrative Assistant',
+    summary:
+      'An Administrative Assistant will perform a range of administrative tasks in support of the sales, operations and management teams.',
+    context: [],
+    duties: [
+      'Represent Hartford in a positive and professional manner',
+      'Work with all personnel in servicing customers and achieving company goals',
+      'Manage rental contracts',
+      'Complete and maintain various reports as assigned',
+      'Assist with customer requests',
+      'Conduct post-sale follow-ups',
+      'Assist in collections',
+      'Manage and track purchase requests',
+      'Maintain accountability for multiple tasks simultaneously despite frequent interruption',
+      'Comply with company policies and procedures',
+      'Perform additional duties as assigned',
+    ],
+    quals: [
+      'Any combination of education, experience and training equivalent to graduation from high school or a GED',
+      '1 year of administrative or customer service experience',
+      'Good communication skills',
+      'Experience working in a fast-paced, complex and dynamic environment',
+      'Computer skills: MS-Office, Adobe Acrobat, MS-Outlook',
+      'Positive Attitude, exemplary attendance and reliable team member',
+    ],
+  },
+];
+
+// Live application-form option lists (the position list is longer than the
+// roles published on the page — kept as-is from the live form).
+const positionOptions = [
+  'Content Creator',
+  'Audio Visual Technician',
+  'Warehouse Manager',
+  'Warehouse Associate',
+  'Delivery Driver',
+  'Account Manager',
+  'Customer Service Representative',
+  'Administrative Assistant',
+];
+const locationOptions = ['Chicago', 'Orlando', 'New York', 'Washington, DC', 'Other'];
+
+const datePosted = new Date().toISOString().slice(0, 10);
+const jobSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Career Opportunities at Hartford Technology Rental',
+  itemListElement: roles.map((r, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'JobPosting',
+      title: r.title,
+      description: [r.summary, ...r.context].join(' '),
+      datePosted,
+      employmentType: 'FULL_TIME',
+      hiringOrganization: { '@id': `${SITE.url}/#organization` },
+      jobLocation: ['Chicago', 'Los Angeles', 'New York', 'Washington, DC'].map((city) => ({
+        '@type': 'Place',
+        address: { '@type': 'PostalAddress', addressLocality: city, addressCountry: 'US' },
+      })),
+      directApply: true,
+      url: `${SITE.url}/careers/`,
+    },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Careers', item: `${SITE.url}/careers/` },
+  ],
+};
+---
+
+<Base
+  title="Career Opportunities at Hartford Technology Rental | Careers"
+  description="Grow your career in the technology rental industry. Hartford Technology Rental is hiring AV technicians, warehouse associates, delivery drivers, account managers and more — competitive salaries, medical, dental, PTO and 401K."
+  schema={[breadcrumbSchema, jobSchema]}
+>
+  <!-- ============ HERO — the crew call ============ -->
+  <section class="border-b border-line bg-paper-dark text-bg">
+    <div class="mx-auto max-w-[1440px] px-5 pb-12 pt-14 lg:px-10 lg:pb-16 lg:pt-24">
+      <p class="mono-label hero-line flex items-center gap-2 text-muted-dark">
+        <span class="tally" aria-hidden="true"></span>Now hiring · {roles.length} open roles
+      </p>
+      <h1 class="display hero-line mt-6 max-w-[14ch] text-[clamp(1.75rem,8.5vw,5.5rem)]" style="--hl-delay: 60ms">
+        Career opportunities
+      </h1>
+      <div class="mt-9 flex flex-wrap items-end justify-between gap-x-16 gap-y-8">
+        <p class="hero-line max-w-[52ch] text-base leading-relaxed text-muted-dark lg:text-lg" style="--hl-delay: 140ms">
+          {intro}
+        </p>
+        <div class="hero-line flex flex-wrap items-center gap-5" style="--hl-delay: 200ms">
+          <a href="#apply" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white">
+            Apply today
+          </a>
+          <a href={`mailto:${SITE.email}`} class="mono-label link-draw text-muted-dark">Questions? {SITE.email}</a>
+        </div>
+      </div>
+
+      <!-- the departures board: every open role, split-flap flip-in.
+           Rows ARE the listings — each expands in place with the full posting. -->
+      <div class="board hero-line mt-12 overflow-hidden border border-line-dark bg-paper-darker lg:mt-16" style="--hl-delay: 260ms">
+        <div class="flex items-center justify-between gap-4 border-b border-line-dark px-4 py-2.5 sm:px-6">
+          <p class="mono-label text-muted-dark">Open roles — {roles.length} listings · Full time</p>
+          <p class="mono-label flex items-center gap-2 text-muted-dark"><span class="tally" aria-hidden="true"></span>Updated live</p>
+        </div>
+        <ul class="divide-y divide-line-dark/60" role="list">
+          {roles.map((r, i) => (
+            <li>
+              <details class="faq board-item scroll-mt-28" id={`role-${i}`}>
+                <summary
+                  class="board-row grid grid-cols-[2rem_1fr_auto] items-center gap-x-3 px-4 py-3.5 transition-colors hover:bg-bg/5 sm:grid-cols-[2.5rem_1fr_auto] sm:gap-x-5 sm:px-6"
+                  style={`--row: ${i}`}
+                >
+                  <span class="board-index font-mono text-xs text-muted-dark" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="min-w-0">
+                    <span class="sr-only">{r.title} — expand the full listing</span>
+                    <span class="board-name flex flex-wrap gap-x-[0.55em] gap-y-1.5" aria-hidden="true">
+                      {r.title.toUpperCase().split(' ').map((word, wi) => (
+                        <span class="flex gap-px">
+                          {word.split('').map((ch, j) => (
+                            <span class="flap" style={`--i: ${wi * 7 + j}`}>{ch}</span>
+                          ))}
+                        </span>
+                      ))}
+                    </span>
+                  </span>
+                  <span class="flex items-center gap-3 sm:gap-5" aria-hidden="true">
+                    <span class="mono-label flex items-center gap-2 text-[oklch(0.72_0.17_27)]">
+                      Open <span class="tally"></span>
+                    </span>
+                    <svg class="faq-icon h-4 w-4 text-muted-dark" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.4" />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="faq-body">
+                  <div>
+                    <div class="grid gap-x-14 gap-y-8 px-4 pb-9 pt-2 sm:pl-[5.25rem] sm:pr-6 lg:grid-cols-2">
+                      <p class="max-w-[70ch] text-sm leading-relaxed text-muted-dark lg:col-span-2">{r.summary}</p>
+                      {r.context.map((p) => (
+                        <p class="max-w-[70ch] text-sm leading-relaxed text-muted-dark lg:col-span-2">{p}</p>
+                      ))}
+                      <div>
+                        <h3 class="mono-label text-bg">Essential duties</h3>
+                        <ul class="mt-3 space-y-2" role="list">
+                          {r.duties.map((d) => (
+                            <li class="flex gap-3 text-sm leading-relaxed text-muted-dark">
+                              <span class="mt-[0.55em] h-px w-3 flex-none bg-muted-dark/60" aria-hidden="true"></span>
+                              {d}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h3 class="mono-label text-bg">Minimum qualifications</h3>
+                        <ul class="mt-3 space-y-2" role="list">
+                          {r.quals.map((q) => (
+                            <li class="flex gap-3 text-sm leading-relaxed text-muted-dark">
+                              <span class="mt-[0.55em] h-px w-3 flex-none bg-muted-dark/60" aria-hidden="true"></span>
+                              {q}
+                            </li>
+                          ))}
+                        </ul>
+                        <a
+                          href="#apply"
+                          class="mt-7 inline-block bg-bg px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white"
+                          data-apply-role={r.title}
+                        >
+                          Apply — {r.title}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ APPLICATION ============ -->
+  <section id="apply" class="scroll-mt-24 border-b border-line bg-surface/60">
+    <div class="mx-auto grid max-w-[1440px] gap-12 px-5 py-14 lg:grid-cols-[1fr_34rem] lg:gap-20 lg:px-10 lg:py-20">
+      <div class="reveal">
+        <h2 class="display text-[clamp(1.65rem,3.2vw,2.5rem)]">Apply today</h2>
+        <p class="mt-6 max-w-[52ch] text-[0.9375rem] leading-relaxed text-ink-2">
+          Send us your resume and the role you’re after — a real person reads every application.
+          If your experience fits an opening at one of our offices, we’ll be in touch to set up a conversation.
+        </p>
+        <p class="mt-4 max-w-[52ch] text-[0.9375rem] leading-relaxed text-ink-2">{benefitsLine} {locationsLine}</p>
+        <ul class="mt-5 flex flex-wrap gap-2" role="list">
+          {benefits.map((b) => (
+            <li class="mono-label border border-line bg-bg px-3 py-1.5 text-ink-3">{b}</li>
+          ))}
+        </ul>
+        <p class="mono-label mt-8 flex items-center gap-2 text-ink-3">
+          <span class="tally" aria-hidden="true"></span>Questions? {SITE.phone} · {SITE.email}
+        </p>
+      </div>
+
+      <div class="reveal">
+        <form class="border border-line bg-bg p-6 lg:p-8" data-careers-form novalidate aria-label="Job application">
+          <div class="grid grid-cols-2 gap-4">
+            <label class="col-span-2 block">
+              <span class="mono-label text-ink-3">Name *</span>
+              <input required type="text" name="name" autocomplete="name" class="mt-1.5 w-full border border-line bg-bg px-3 py-2.5 text-sm focus:border-ink" />
+            </label>
+            <label class="col-span-2 block sm:col-span-1">
+              <span class="mono-label text-ink-3">Email *</span>
+              <input required type="email" name="email" autocomplete="email" class="mt-1.5 w-full border border-line bg-bg px-3 py-2.5 text-sm focus:border-ink" />
+            </label>
+            <label class="col-span-2 block sm:col-span-1">
+              <span class="mono-label text-ink-3">Phone</span>
+              <input type="tel" name="phone" autocomplete="tel" class="mt-1.5 w-full border border-line bg-bg px-3 py-2.5 text-sm focus:border-ink" />
+            </label>
+            <label class="col-span-2 block sm:col-span-1">
+              <span class="mono-label text-ink-3">Desired position *</span>
+              <select required name="position" class="mt-1.5 w-full border border-line bg-bg px-3 py-2.5 text-sm focus:border-ink" data-position-select>
+                <option value="" selected disabled>Select a position</option>
+                {positionOptions.map((p) => <option value={p}>{p}</option>)}
+              </select>
+            </label>
+            <label class="col-span-2 block sm:col-span-1">
+              <span class="mono-label text-ink-3">Desired location *</span>
+              <select required name="location" class="mt-1.5 w-full border border-line bg-bg px-3 py-2.5 text-sm focus:border-ink">
+                <option value="" selected disabled>Select a location</option>
+                {locationOptions.map((l) => <option value={l}>{l}</option>)}
+              </select>
+            </label>
+            <label class="col-span-2 block">
+              <span class="mono-label text-ink-3">Resume *</span>
+              <input required type="file" name="resume" accept=".pdf,.doc,.docx" class="mt-1.5 w-full border border-line bg-bg px-3 py-2 text-sm text-ink-2 file:mr-4 file:border-0 file:bg-ink file:px-4 file:py-1.5 file:text-xs file:font-semibold file:text-bg" />
+              <span class="mt-1.5 block text-xs text-ink-3">PDF or Word, up to 10&nbsp;MB</span>
+            </label>
+          </div>
+          <button type="submit" class="mt-5 w-full bg-ink py-3.5 text-sm font-semibold text-bg transition-colors hover:bg-signal-strong">
+            Submit application
+          </button>
+        </form>
+
+        <div class="hidden border border-line bg-bg px-6 py-14 text-center" data-careers-success>
+          <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-ink">
+            <svg class="h-5 w-5 text-bg" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>
+          </span>
+          <p class="display-sub mt-5 text-base">Application received</p>
+          <p class="mx-auto mt-2 max-w-[32ch] text-sm leading-relaxed text-ink-3">
+            Thanks for applying — we review every application and will reach out if there’s a fit.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-line {
+    animation: hero-rise 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation-delay: var(--hl-delay, 0ms);
+  }
+  @keyframes hero-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* departures board: each letter is a flap cell that flips in */
+  .board { perspective: 900px; }
+  .flap {
+    display: grid;
+    place-items: center;
+    min-width: 1.55ch;
+    padding: 0.3em 0.1em;
+    font-family: var(--font-mono);
+    font-size: clamp(0.7rem, 1.6vw, 0.9375rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-bg);
+    background: linear-gradient(
+      to bottom,
+      oklch(0.27 0.007 260) 0 48%,
+      oklch(0.21 0.007 260) 48% 52%,
+      oklch(0.245 0.007 260) 52% 100%
+    );
+    transform-origin: center top;
+    backface-visibility: hidden;
+    animation: flap-in 0.5s var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)) both;
+    animation-delay: calc(400ms + var(--row, 0) * 110ms + var(--i, 0) * 16ms);
+  }
+  @keyframes flap-in {
+    from { transform: rotateX(-90deg); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  .board-row:hover .flap { background: oklch(0.3 0.008 260); }
+  .board-item[open] .board-index,
+  .board-row:hover .board-index {
+    color: oklch(0.72 0.17 27);
+  }
+  .board-item[open] > summary { background: oklch(0.185 0.006 260); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-line, .flap { animation: none; }
+    .board-row, .flap { transition: none; }
+  }
+</style>
+
+<script>
+  // "Apply — <role>" buttons preselect the position in the form below.
+  const select = document.querySelector('[data-position-select]') as HTMLSelectElement | null;
+  document.querySelectorAll<HTMLAnchorElement>('[data-apply-role]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const role = btn.dataset.applyRole ?? '';
+      if (select && [...select.options].some((o) => o.value === role)) select.value = role;
+    });
+  });
+
+  // Prototype form: no backend yet — swap to the confirmation state.
+  const form = document.querySelector('[data-careers-form]') as HTMLFormElement | null;
+  const success = document.querySelector('[data-careers-success]') as HTMLElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    form.classList.add('hidden');
+    success?.classList.remove('hidden');
+    success?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+</script>
