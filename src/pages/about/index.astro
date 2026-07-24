@@ -18,12 +18,53 @@ const depots = [
 ];
 
 const WP = 'https://hartfordrents.com/wp-content/uploads';
+// Full "Who We Are" bios from the live About page, in its order.
 const team = [
-  { name: 'Anthony R. Graffia', role: 'Co-CEO', bio: 'Certified Public Accountant. Chaired a large Midwest computer-leasing company from 1978 to 2005 before co-founding Hartford.', img: `${WP}/2020/02/pageImage-AnthonyG.jpg` },
-  { name: 'John B. Ward', role: 'Co-CEO', bio: 'Forty-year entrepreneur and founder of five companies. Built Hartford around sales discipline and customer service.', img: `${WP}/2020/02/pageImage-JohnW.jpg` },
-  { name: 'Dan Kallen', role: 'VP of Sales', bio: 'Twenty-plus years in sales and project management, formerly at NBC. President of the International Technology Rental Association.', img: `${WP}/2020/02/pageImage-DanK.jpg` },
-  { name: 'Mark Ferro', role: 'Regional Sales Manager', bio: 'Seventeen years in the rental industry. Opened Hartford’s Washington DC office.', img: `${WP}/2020/02/pageImage-MarkF.jpg` },
-  { name: 'Peter Kutrumanes', role: 'General Manager', bio: 'Eighteen-plus years across IT and AV, formerly an assistant trader at Comdisco.', img: `${WP}/2020/02/pageImage-PeterK.jpg` },
+  {
+    name: 'Anthony R. Graffia',
+    role: 'Co-CEO',
+    img: `${WP}/2020/02/pageImage-AnthonyG.jpg`,
+    paras: [
+      'Tony co-founded HTR in 1991 and serves as its co-CEO. From 1978 through 2005, he started, served as Chairman, and then sold one of the largest computer leasing companies in the Midwest, and he still serves as Chairman of several successor technology companies. From 1973 to 1978, Tony was Treasurer of Mutual Leasing Associates, a Chicago-based regional leasing company, and prior to that was a staff auditor with Grant Thornton. He is a Certified Public Accountant.',
+      'His vast experience in the manufacturing and marketing of technology products provides HTR with extraordinary leadership, financial discipline and creativity in analyzing and structuring sophisticated solutions for our customers.',
+    ],
+  },
+  {
+    name: 'John B. Ward',
+    role: 'Co-CEO',
+    img: `${WP}/2020/02/pageImage-JohnW.jpg`,
+    paras: [
+      'As co-founder and co-CEO, John has invested 40 years in being an entrepreneur. During his career, he has started five companies and served on numerous corporate, university, association and charitable boards. Currently Hartford benefits from his focus on sales and customer service and his unwavering attention to detail. His broad industry knowledge has helped shape Hartford into an organization that offers not only the best technology rental equipment in the industry but also the most attentive service.',
+    ],
+    quote: 'Think like your customer’s partner, not just his supplier. That’s why we’re in business.',
+  },
+  {
+    name: 'Mark Ferro',
+    role: 'Regional Sales Manager',
+    img: `${WP}/2020/02/pageImage-MarkF.jpg`,
+    paras: [
+      'Mark has an extensive technical background, loves solving problems, and brings 17 years of experience in providing total solutions to all types of businesses for short-term rental projects. After a nine-year stint opening and then running the Washington DC office for a publicly held competitor, Mark opened HTR’s Washington DC office. The quintessential entrepreneurial manager, Mark leads from the trenches with an accomplished and experienced team committed to making sure your next short-term project is a success.',
+      'Problems, obstacles, an upcoming project where you’re not sure what you need? No problem. Mark is the consummate idea man who thrives on the challenges that complex events and short-term rental projects sometimes bring.',
+    ],
+  },
+  {
+    name: 'Dan Kallen',
+    role: 'Vice President of Sales',
+    img: `${WP}/2020/02/pageImage-DanK.jpg`,
+    paras: [
+      'Dan brings over 20 years of sales and expert project management to your doorstep. After working for NBC for five years, Dan joined Hartford’s Chicago office. During his ten years with Hartford, he has structured complex equipment, audio visual and communications packages for large trade show events, Fortune 500 companies, and lots and lots of much smaller organizations. He currently serves as President of the industry’s largest trade association, the International Technology Rental Association.',
+      'Whether you need a single laptop or on-site project management at a large event, Dan will give you his full attention to ensure every detail goes as smoothly as possible. Plain and simple, customer service is the single most important aspect of Dan’s job.',
+    ],
+  },
+  {
+    name: 'Peter Kutrumanes',
+    role: 'General Manager',
+    img: `${WP}/2020/02/pageImage-PeterK.jpg`,
+    paras: [
+      'Pete brings over 18 years of experience in IT and AV related projects. Prior to joining HTR, Peter was an assistant trader at Comdisco, one of the largest IT service and leasing companies in the world. He then joined ICC Enterprises as Vice President and Director of Operations, where he was instrumental in growing it into one of the country’s largest IT and A/V rental companies. He has been with Hartford for over a dozen years.',
+      'Such extensive, hands-on experience has helped him be sensitive to the needs of our clients and fully comprehend the complex business-related issues that are part of our industry. In the small amount of time we let him out of the office, Pete volunteers with several feed-the-poor organizations and helps coach youth basketball.',
+    ],
+  },
 ];
 
 const values = [
@@ -32,15 +73,6 @@ const values = [
   { title: 'Teamwork', text: 'Shared, collective responsibility for every rental that leaves a depot.' },
   { title: 'Innovation', text: 'Continuous improvement in the fleet, the process and the technology behind both.' },
   { title: 'Economic value', text: 'Excellent value for clients while meeting our obligations as a business.' },
-];
-
-const timeline = [
-  { year: '1978', title: 'The roots', text: 'Anthony Graffia begins nearly three decades chairing a large Midwest computer-leasing company — the discipline Hartford is later built on.', img: null },
-  { year: '1991', title: 'Hartford founded', text: 'Two financial guys — Graffia and John Ward, with 80 years of combined business experience — open a technology rental house on a simple conviction: it’s really service that we sell.', img: u('/img/hpx3100.jpg'), alt: 'Broadcast camcorder of the era' },
-  { year: 'Growth', title: 'A national depot network', text: 'Las Vegas and Orlando join the Arlington Heights headquarters — three depots placed to reach any US venue overnight.', img: u('/img/venue.jpg'), alt: 'A packed event venue with staging and projection' },
-  { year: 'Growth', title: 'Washington DC office', text: 'Mark Ferro opens the DC office, putting Hartford beside the country’s densest run of conferences, agencies and associations.', img: null },
-  { year: 'Industry', title: 'Leading the industry', text: 'VP of Sales Dan Kallen serves as President of the International Technology Rental Association.', img: null },
-  { year: 'Today', title: `${fleetCount} products, 50 states`, text: 'Broadcast cameras to badge printers: a fleet spanning 31 rental categories, QC’d by manufacturer-trained technicians and shipped nationwide both ways, backed by 24/7 humans.', img: u('/img/event-solutions.jpg'), alt: 'Keynote projection above a full audience' },
 ];
 
 // Hero depot line — geography, not chronology (the timeline lives in the
@@ -148,42 +180,28 @@ const breadcrumbSchema = {
       <h2 class="display reveal text-[clamp(1.65rem,3.2vw,2.5rem)]">Two financial guys and a service obsession</h2>
       <div class="reveal max-w-[66ch] space-y-4 text-[0.9375rem] leading-relaxed text-ink-2">
         <p>
-          Hartford Technology Rental was founded in 1991 by Anthony R. Graffia and John B. Ward —
-          by their own description, a couple of financial guys. Between them: eighty years of
-          business experience and a shared conviction that technology rental is a service
-          business that happens to ship hardware.
+          Hartford Technology Rental was founded in 1991 by a couple of financial guys who really
+          understand customer service and who have spent 80 years between them exceeding their
+          customers’ expectations. We’ve surrounded ourselves with a team of extraordinary people
+          who share our two founders’ vision of caring about customers and providing first-class
+          technology rental products and service.
         </p>
         <p>
-          That conviction shaped everything that followed. Hartford rents exclusively to
-          businesses, government agencies and school districts, keeps its fleet enterprise-grade,
-          and answers its own phones at 3&nbsp;a.m. Thirty-five years later the model hasn’t
-          changed — only the fleet has.
+          We’ve got a saying: even though we all spend the better part of each day talking,
+          thinking and living technology rental equipment, it’s really service that we sell.
+          That’s where our tag line comes from — “Not just equipment.”
+        </p>
+        <p>
+          Our job is to make your life easier — at least in the area of technology. We provide
+          technology rental equipment, lots of it, and we make sure it’s new, well cared-for and
+          from industry-leading manufacturers. But more importantly, we’ll help you make it work
+          for your event, conference or office. We have a passion for details and will execute
+          flawlessly: at all levels of our company, we act like partners and think like innovators.
+        </p>
+        <p>
+          Oh, and did we mention that we really like what we do?
         </p>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ TIMELINE ============ -->
-  <section class="border-b border-line bg-surface/60" aria-labelledby="timeline-heading">
-    <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
-      <h2 id="timeline-heading" class="display-sub reveal text-lg text-ink">The signal path · 1991 → today</h2>
-      <ol class="tl mt-10" role="list">
-        {timeline.map((t) => (
-          <li class="tl-item reveal">
-            <span class="tl-dot" aria-hidden="true"></span>
-            <div class="tl-body">
-              <p class="mono-label text-signal">{t.year}</p>
-              <h3 class="display-sub mt-2 text-base text-ink">{t.title}</h3>
-              <p class="mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-ink-2">{t.text}</p>
-            </div>
-            {t.img && (
-              <div class="tl-media reveal-img relative overflow-hidden border border-line">
-                <img src={t.img} alt={t.alt} class="h-full w-full object-cover" loading="lazy" width="520" height="340" />
-              </div>
-            )}
-          </li>
-        ))}
-      </ol>
     </div>
   </section>
 
@@ -206,27 +224,49 @@ const breadcrumbSchema = {
     </div>
   </section>
 
-  <!-- ============ LEADERSHIP ============ -->
-  <section class="border-b border-line">
+  <!-- ============ WHO WE ARE ============ -->
+  <section class="border-b border-line bg-surface/60">
     <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
       <div class="flex flex-wrap items-end justify-between gap-6">
         <h2 class="display reveal text-[clamp(1.65rem,3.2vw,2.5rem)]">The people on the other end of the phone</h2>
-        <p class="mono-label reveal text-ink-3">Leadership</p>
+        <p class="mono-label reveal text-ink-3">Who we are</p>
       </div>
-      <ul class="mt-10 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4" role="list">
-        {team.map((m) => (
-          <li class="team-card reveal border border-line bg-bg">
-            <div class="relative overflow-hidden bg-surface">
-              <img src={m.img} alt={`${m.name}, ${m.role}`} class="team-photo aspect-[4/5] w-full object-cover" loading="lazy" width="440" height="550" />
-            </div>
-            <div class="border-t border-line p-5">
-              <p class="mono-label text-ink-3">{m.role}</p>
-              <h3 class="mt-1.5 text-[0.9375rem] font-semibold">{m.name}</h3>
-              <p class="mt-2 text-sm leading-snug text-ink-3">{m.bio}</p>
+      <ol class="mt-6" role="list">
+        {team.map((m, i) => (
+          <li class="reveal border-t border-line py-10 first:mt-4 lg:py-14">
+            <div class={`grid gap-8 lg:grid-cols-[280px_1fr] lg:gap-16 ${i % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
+              <div class="lg:[direction:ltr]">
+                <div class="team-card relative w-full max-w-[280px] overflow-hidden border border-line bg-bg">
+                  <img
+                    src={m.img}
+                    alt={`${m.name}, ${m.role}`}
+                    class="team-photo aspect-[4/5] w-full object-cover"
+                    loading="lazy"
+                    width="440" height="550"
+                  />
+                  <p class="mono-label border-t border-line px-4 py-2.5 text-ink-3">{m.role}</p>
+                </div>
+              </div>
+              <div class="max-w-[66ch] lg:[direction:ltr]">
+                <h3 class="display-sub text-xl text-ink">{m.name}</h3>
+                <div class="mt-5 space-y-4 text-[0.9375rem] leading-relaxed text-ink-2">
+                  {m.paras.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+                {m.quote && (
+                  <blockquote class="mt-6 border-t border-line pt-5">
+                    <p class="flex items-start gap-3 text-lg font-medium leading-snug text-ink">
+                      <span class="tally mt-2 flex-none" aria-hidden="true"></span>
+                      “{m.quote}”
+                    </p>
+                  </blockquote>
+                )}
+              </div>
             </div>
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   </section>
 
@@ -315,73 +355,6 @@ const breadcrumbSchema = {
       animation: none;
     }
   }
-
-  /* ---------- timeline: ruled spine, tally dots, scroll-drawn progress ---------- */
-  #timeline-heading {
-    scroll-margin-top: 7rem;
-  }
-  .tl {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
-    padding-left: 1.75rem;
-  }
-  .tl::before {
-    content: '';
-    position: absolute;
-    left: 0.3125rem;
-    top: 0.4rem;
-    bottom: 0.4rem;
-    width: 1px;
-    background: var(--color-line-dark);
-    opacity: 0.35;
-  }
-  /* progress line draws with scroll where supported; static elsewhere */
-  .tl::after {
-    content: '';
-    position: absolute;
-    left: 0.3125rem;
-    top: 0.4rem;
-    bottom: 0.4rem;
-    width: 1px;
-    background: var(--color-signal);
-  }
-  @supports (animation-timeline: view()) {
-    .tl::after {
-      transform-origin: top;
-      animation: tl-draw linear both;
-      animation-timeline: view();
-      animation-range: entry 10% exit 60%;
-    }
-    @keyframes tl-draw {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .tl::after { animation: none; transform: none; }
-  }
-  .tl-item {
-    position: relative;
-    display: grid;
-    gap: 1.25rem;
-  }
-  @media (min-width: 1024px) {
-    .tl-item { grid-template-columns: 1.4fr 1fr; align-items: center; }
-    .tl-item:not(:has(.tl-media)) { grid-template-columns: 1fr; max-width: 60%; }
-  }
-  .tl-dot {
-    position: absolute;
-    left: -1.75rem;
-    top: 0.35rem;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: var(--color-signal);
-    box-shadow: 0 0 0 3px oklch(from var(--color-signal) l c h / 0.18);
-  }
-  .tl-media { max-height: 300px; aspect-ratio: 16/10; }
 
   /* ---------- values: tick lights + description raises on hover/focus ---------- */
   .value-cell { outline: none; transition: background-color 0.25s var(--ease-out-quart); }
