@@ -101,13 +101,19 @@ const NAV = cats.length ? buildNavFromCategories(cats, products) : NAV_STATIC;
                           {cat.topProducts?.length > 0 && (
                             <>
                               <p class="mono-label mt-5 mb-2 text-ink-3">Popular rentals</p>
-                              <div class="grid grid-cols-2 gap-x-8">
+                              <div class="grid grid-cols-2 gap-x-8 gap-y-1">
                                 {cat.topProducts.map((p) => (
-                                  <a
-                                    href={p.slug}
-                                    class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
-                                  >
-                                    {p.name}
+                                  <a href={p.slug} class="group/pp flex items-center gap-3 py-1">
+                                    <span class="flex h-10 w-10 flex-none items-center justify-center overflow-hidden border border-line bg-white">
+                                      {p.img ? (
+                                        <img src={p.img} alt="" class="max-h-8 max-w-8 object-contain" loading="lazy" width="32" height="32" />
+                                      ) : (
+                                        <span class="tally" aria-hidden="true"></span>
+                                      )}
+                                    </span>
+                                    <span class="text-[0.9375rem] leading-snug text-ink-2 transition-colors group-hover/pp:text-ink">
+                                      {p.name}
+                                    </span>
                                   </a>
                                 ))}
                               </div>

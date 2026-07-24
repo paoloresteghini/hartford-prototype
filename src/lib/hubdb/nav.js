@@ -33,7 +33,7 @@ export function buildNavFromCategories(cats, products = []) {
           productCount: catProducts.length,
           topProducts:
             subs.length < 4
-              ? catProducts.slice(0, 8).map((p) => ({ name: p.name, slug: u(p.url) }))
+              ? catProducts.slice(0, 8).map((p) => ({ name: p.name, slug: u(p.url), img: p.image }))
               : [],
         };
       }),
