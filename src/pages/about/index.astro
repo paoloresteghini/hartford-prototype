@@ -43,6 +43,14 @@ const timeline = [
   { year: 'Today', title: `${fleetCount} products, 50 states`, text: 'Broadcast cameras to badge printers: a fleet spanning 31 rental categories, QC’d by manufacturer-trained technicians and shipped nationwide both ways, backed by 24/7 humans.', img: u('/img/event-solutions.jpg'), alt: 'Keynote projection above a full audience' },
 ];
 
+// Hero ledger — the company line, 1978 → today. Last node is "live" (red tally).
+const ledger = [
+  { year: '1978', label: 'Leasing-desk roots' },
+  { year: '1991', label: 'Hartford founded' },
+  { year: 'Growth', label: 'Three depots · DC office' },
+  { year: 'Today', label: `${fleetCount} products · 50 states`, live: true },
+];
+
 const stats = [
   { n: years, suffix: '', label: 'Years in rental' },
   { n: fleetCount, suffix: '', label: 'Products in fleet' },
@@ -84,35 +92,52 @@ const breadcrumbSchema = {
   description="Founded in 1991 by two financial guys with 80 years of combined experience, Hartford Technology Rentals grew into a top-5 US AV and computing rental house — three depots, 50 states, 24/7 technicians. It's really service that we sell."
   schema={[breadcrumbSchema, aboutSchema]}
 >
-  <!-- ============ HERO ============ -->
+  <!-- ============ HERO — the company line ============ -->
   <section class="border-b border-line bg-paper-dark text-bg">
-    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:px-10 lg:pb-20 lg:pt-16">
-      <div class="flex flex-col justify-center">
-        <p class="mono-label flex items-center gap-2 text-muted-dark">
-          <span class="tally" aria-hidden="true"></span>Est. 1991 · Chicago — Las Vegas — Orlando
-        </p>
-        <h1 class="display mt-5 text-[clamp(2.5rem,6vw,5rem)]">Not just equipment</h1>
-        <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-muted-dark lg:text-lg">
+    <div class="mx-auto max-w-[1440px] px-5 pb-12 pt-14 lg:px-10 lg:pb-16 lg:pt-24">
+      <p class="mono-label flex items-center gap-2 text-muted-dark">
+        <span class="tally" aria-hidden="true"></span>Est. 1991 · Chicago — Las Vegas — Orlando
+      </p>
+      <h1 class="display hero-line mt-6 text-[clamp(2.75rem,7.5vw,6rem)]">Not just equipment</h1>
+      <div class="mt-9 flex flex-wrap items-end justify-between gap-x-16 gap-y-8">
+        <p class="hero-line max-w-[46ch] text-base leading-relaxed text-muted-dark lg:text-lg" style="--hl-delay: 90ms">
           “Even though we all spend the better part of each day talking, thinking and living
           technology rental equipment, it’s really service that we sell.”
         </p>
-        <div class="mt-9 flex flex-wrap items-center gap-5">
+        <div class="hero-line flex flex-wrap items-center gap-5" style="--hl-delay: 160ms">
           <button type="button" class="bg-bg px-7 py-4 text-sm font-semibold text-ink transition-colors hover:bg-signal hover:text-white" data-drawer-open>
             Work with us
           </button>
           <a href={SITE.phoneHref} class="mono-label link-draw text-muted-dark">{SITE.phone} · 24/7</a>
         </div>
       </div>
-      <div class="reveal-img relative min-h-[280px] overflow-hidden lg:min-h-[400px]">
-        <img
-          src={u('/img/audio-studio.jpg')}
-          alt="A shockmounted studio condenser microphone in a dark control room"
-          class="absolute inset-0 h-full w-full object-cover"
-          width="960" height="640"
-          fetchpriority="high"
-        />
-        <p class="mono-label absolute bottom-4 left-4 bg-ink px-2.5 py-1.5 text-bg">Since 1991 · Business &amp; education only</p>
-      </div>
+
+      <!-- the ledger: 1978 → today, jumps to the full story -->
+      <a
+        href="#timeline-heading"
+        class="hero-ledger group relative mt-16 block pt-8 lg:mt-24"
+        aria-label="Company timeline, 1978 to today — jump to the full story"
+      >
+        <span class="ledger-rule absolute left-0 top-0 hidden h-px w-full origin-left bg-line-dark transition-colors duration-300 group-hover:bg-muted-dark sm:block" aria-hidden="true"></span>
+        <span class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
+          {ledger.map((node, i) => (
+            <span class="ledger-node relative block" style={`--ln-delay: ${240 + i * 110}ms`}>
+              <span
+                class:list={[
+                  'mb-3 block h-[7px] w-[7px] transition-transform duration-300 group-hover:scale-125 sm:absolute sm:-top-8 sm:left-0 sm:mb-0 sm:-translate-y-1/2',
+                  node.live ? 'tally' : 'rounded-full bg-muted-dark',
+                ]}
+                aria-hidden="true"
+              ></span>
+              <span class="mono-label block text-bg">{node.year}</span>
+              <span class="mt-1.5 block text-sm leading-snug text-muted-dark transition-colors duration-300 group-hover:text-bg">{node.label}</span>
+            </span>
+          ))}
+          <span class="mono-label pointer-events-none absolute -top-8 right-0 hidden -translate-y-1/2 items-center gap-2 text-muted-dark opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:flex">
+            Full story ↓
+          </span>
+        </span>
+      </a>
     </div>
   </section>
 
@@ -262,7 +287,38 @@ const breadcrumbSchema = {
 </Base>
 
 <style>
+  /* ---------- hero: staggered load + ledger draw (enhance, never gate) ---------- */
+  .hero-line {
+    animation: hero-rise 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation-delay: var(--hl-delay, 0ms);
+  }
+  @keyframes hero-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  .ledger-rule {
+    animation: ledger-draw 1s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s both;
+  }
+  @keyframes ledger-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .ledger-node {
+    animation: hero-rise 0.6s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation-delay: var(--ln-delay, 0ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-line,
+    .ledger-rule,
+    .ledger-node {
+      animation: none;
+    }
+  }
+
   /* ---------- timeline: ruled spine, tally dots, scroll-drawn progress ---------- */
+  #timeline-heading {
+    scroll-margin-top: 7rem;
+  }
   .tl {
     position: relative;
     display: flex;
