@@ -4,7 +4,8 @@ import { NAV_STATIC, SITE, u } from '../data/catalog.js';
 import { buildNavFromCategories } from '../lib/hubdb/nav.js';
 
 const cats = (await getCollection('categories')).map((c) => c.data);
-const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
+const products = (await getCollection('products')).map((p) => p.data);
+const NAV = cats.length ? buildNavFromCategories(cats, products) : NAV_STATIC;
 ---
 
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[80] focus:bg-bg focus:text-ink focus:px-4 focus:py-2 focus:text-sm">
@@ -77,19 +78,41 @@ const NAV = cats.length ? buildNavFromCategories(cats) : NAV_STATIC;
                         class:list={['mega-sub-pane h-full grid-rows-[auto_1fr_auto]', { active: i === 0 }]}
                         data-mega-pane={`${division.id}-${i}`}
                       >
-                        <div class="mb-4 flex items-baseline justify-between border-b border-line pb-3">
-                          <p class="display-sub text-sm">{cat.name}</p>
+                        <div class="mb-4 flex items-baseline justify-between gap-4 border-b border-line pb-3">
+                          <p class="display-sub text-sm">
+                            {cat.name}
+                            {cat.productCount > 0 && (
+                              <span class="mono-label ml-3 font-normal text-ink-3">{cat.productCount} rentals</span>
+                            )}
+                          </p>
                           <a href={cat.slug} class="mono-label link-draw text-ink-3 hover:text-ink">View all →</a>
                         </div>
-                        <div class="grid grid-cols-2 content-start gap-x-8">
-                          {cat.subs.map((sub) => (
-                            <a
-                              href={sub.slug}
-                              class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
-                            >
-                              {sub.name}
-                            </a>
-                          ))}
+                        <div class="content-start">
+                          <div class="grid grid-cols-2 gap-x-8">
+                            {cat.subs.map((sub) => (
+                              <a
+                                href={sub.slug}
+                                class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
+                              >
+                                {sub.name}
+                              </a>
+                            ))}
+                          </div>
+                          {cat.topProducts?.length > 0 && (
+                            <>
+                              <p class="mono-label mt-5 mb-2 text-ink-3">Popular rentals</p>
+                              <div class="grid grid-cols-2 gap-x-8">
+                                {cat.topProducts.map((p) => (
+                                  <a
+                                    href={p.slug}
+                                    class="link-draw w-fit py-1.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink"
+                                  >
+                                    {p.name}
+                                  </a>
+                                ))}
+                              </div>
+                            </>
+                          )}
                         </div>
                         <div class="mt-6 flex items-baseline justify-between gap-6 border-t border-line pt-4">
                           <p class="text-sm text-ink-3">{cat.tagline ?? cat.blurb}</p>

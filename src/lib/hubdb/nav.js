@@ -4,7 +4,9 @@
 import { stripHtml } from './transforms.js';
 import { u } from '../../data/catalog.js';
 
-export function buildNavFromCategories(cats) {
+// products is optional — only the Header passes it, to fill sparse panes
+// (subs < 4) with "Popular rentals" product links and a category count.
+export function buildNavFromCategories(cats, products = []) {
   const divisions = [
     { id: 'av', label: 'Audio Visual' },
     { id: 'computing', label: 'Computing' },
@@ -14,9 +16,10 @@ export function buildNavFromCategories(cats) {
     categories: cats
       .filter((c) => c.division === d.id && c.level === 'top')
       .map((top) => {
-        const subs = cats
-          .filter((c) => c.level === 'mid' && c.topId === top.id)
-          .map((m) => ({ name: m.name, slug: u(m.url) }));
+        const mids = cats.filter((c) => c.level === 'mid' && c.topId === top.id);
+        const subs = mids.map((m) => ({ name: m.name, slug: u(m.url) }));
+        const catIds = new Set([top.id, ...mids.map((m) => m.id)]);
+        const catProducts = products.filter((p) => p.categoryIds?.some((id) => catIds.has(id)));
         return {
           name: top.name,
           slug: u(top.url),
@@ -27,6 +30,11 @@ export function buildNavFromCategories(cats) {
               ? `${subs[0].name} & ${subs[1].name} at your fingertips!`
               : `${top.name} at your fingertips!`,
           subs,
+          productCount: catProducts.length,
+          topProducts:
+            subs.length < 4
+              ? catProducts.slice(0, 8).map((p) => ({ name: p.name, slug: u(p.url) }))
+              : [],
         };
       }),
   }));
