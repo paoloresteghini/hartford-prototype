@@ -6,11 +6,8 @@ import { parseEventBody, parsePillars } from '../lib/hubdb/event-showcase.js';
 
 const { page, config, categories, products } = Astro.props;
 
-const heroImage = config.heroImage
-  ? u(config.heroImage)
-  : (page.introHtml.match(/src="([^"]+)"/) || [])[1] || null;
-const heroAlt = config.heroAlt || 'Event technology set up across a venue';
 const sections = parseEventBody(page.bodyHtml);
+const zoneId = (label) => label.split('·')[1].trim().toLowerCase().replace(/\s+/g, '-');
 
 const intro = sections[0] || { heading: page.h1, html: '' };
 const whySection = sections.find((s) => /why|choose/i.test(s.heading));
@@ -71,17 +68,102 @@ const serviceSchema = {
 ---
 
 <Base title={page.title || page.h1} description={page.metaDescription} schema={[breadcrumbSchema, serviceSchema]}>
-  <!-- ============ HERO — control room ============ -->
-  <section class="border-b border-line bg-paper-dark text-bg">
-    <div class="mx-auto grid max-w-[1440px] gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:px-10 lg:pb-20 lg:pt-16">
-      <div class="flex flex-col justify-center">
+  <!-- ============ HERO — venue plan, drawing no. 01 ============ -->
+  <section class="relative overflow-hidden border-b border-line bg-paper-dark text-bg">
+    <!-- blueprint grid -->
+    <div class="bp-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+    <!-- venue plan drawing (decorative; callout links carry the semantics) -->
+    <svg
+      class="bp-plan pointer-events-none absolute inset-0 hidden h-full w-full lg:block"
+      viewBox="0 0 1440 680"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <pattern id="bp-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="8" stroke="currentColor" stroke-width="1" />
+        </pattern>
+      </defs>
+      <g stroke="currentColor" fill="none" stroke-width="1" class="text-muted-dark/60">
+        <!-- stage + LED wall + podium (right half; left is reserved for the headline) -->
+        <rect class="bp-draw" x="850" y="70" width="380" height="120" pathLength="1" />
+        <rect x="860" y="80" width="360" height="24" fill="url(#bp-hatch)" class="bp-fade text-muted-dark/40" />
+        <rect class="bp-fade" x="900" y="150" width="40" height="24" />
+        <!-- breakout + expo rooms -->
+        <rect class="bp-draw" x="650" y="80" width="160" height="110" stroke-dasharray="6 5" pathLength="1" style="--bp-delay: 350ms" />
+        <rect class="bp-draw" x="1270" y="80" width="130" height="110" stroke-dasharray="6 5" pathLength="1" style="--bp-delay: 450ms" />
+        <!-- FOH + check-in desk -->
+        <rect class="bp-draw" x="960" y="540" width="120" height="50" pathLength="1" style="--bp-delay: 550ms" />
+        <rect class="bp-draw" x="1250" y="470" width="150" height="60" pathLength="1" style="--bp-delay: 650ms" />
+        <!-- PTZ camera positions -->
+        <path class="bp-fade" d="M892 312 l16 0 l-8 -14 z" />
+        <path class="bp-fade" d="M1032 332 l16 0 l-8 -14 z" />
+        <path class="bp-fade" d="M1172 312 l16 0 l-8 -14 z" />
+        <!-- delay speakers -->
+        <circle class="bp-fade" cx="700" cy="330" r="5" />
+        <circle class="bp-fade" cx="1360" cy="330" r="5" />
+        <path class="bp-fade" d="M710 322 a12 12 0 0 1 0 16 M714 318 a18 18 0 0 1 0 24" stroke-width="0.75" />
+        <path class="bp-fade" d="M1350 322 a12 12 0 0 0 0 16 M1346 318 a18 18 0 0 0 0 24" stroke-width="0.75" />
+        <!-- audience seating -->
+        <g class="bp-fade text-muted-dark/40">
+          {Array.from({ length: 6 }, (_, row) =>
+            Array.from({ length: 12 }, (_, col) => (
+              <line
+                x1={720 + col * 44}
+                y1={280 + row * 38}
+                x2={744 + col * 44}
+                y2={280 + row * 38}
+                stroke-width="2"
+              />
+            ))
+          )}
+        </g>
+      </g>
+      <!-- live tally on the center camera -->
+      <circle cx="1040" cy="310" r="3.5" class="fill-signal" />
+      <g class="fill-muted-dark/80 font-mono" font-size="11" letter-spacing="0.1em">
+        <text x="1018" y="135">STAGE</text>
+        <text x="988" y="572">FOH</text>
+        <text x="1282" y="505">CHECK-IN</text>
+        <text x="695" y="140">BREAKOUT</text>
+        <text x="1318" y="140">EXPO</text>
+      </g>
+    </svg>
+
+    <!-- zone callouts — real links into the page -->
+    <div class="absolute inset-0 z-10 mx-auto hidden max-w-[1440px] lg:block" aria-label="Venue zones">
+      {[
+        { href: '#zone-main-stage', label: 'Zone · Main stage', pos: 'left-[60%] top-[4.5%]' },
+        { href: '#zone-breakout-rooms', label: 'Zone · Breakout rooms', pos: 'left-[45%] top-[32%]' },
+        { href: '#zone-expo-floor', label: 'Zone · Expo floor', pos: 'right-[3%] top-[4.5%]' },
+        { href: '#zone-check-in', label: 'Zone · Check-in', pos: 'right-[3%] bottom-[34%]' },
+      ].map((c) => (
+        <a href={c.href} class={`bp-callout pointer-events-auto absolute flex items-center gap-2 ${c.pos}`}>
+          <span class="tally" aria-hidden="true"></span>
+          <span class="mono-label link-draw text-muted-dark transition-colors hover:text-bg">{c.label}</span>
+        </a>
+      ))}
+    </div>
+
+    <!-- drawing title block -->
+    <div class="bp-fade-html absolute bottom-6 right-6 z-10 hidden text-right lg:block" aria-hidden="true">
+      <div class="border border-line-dark/60">
+        <p class="mono-label border-b border-line-dark/60 px-3 py-1.5 text-muted-dark">Hartford Technology Rentals</p>
+        <p class="mono-label border-b border-line-dark/60 px-3 py-1.5 text-muted-dark">General session — plan view</p>
+        <p class="mono-label px-3 py-1.5 text-muted-dark">Scale NTS · Sheet 01 · Full-venue kit</p>
+      </div>
+    </div>
+
+    <div class="relative mx-auto flex min-h-[540px] max-w-[1440px] items-center px-5 pb-16 pt-14 lg:min-h-[660px] lg:px-10">
+      <div class="max-w-[560px]">
         <p class="mono-label flex items-center gap-2 text-muted-dark">
           <span class="tally" aria-hidden="true"></span>Event production · Nationwide
         </p>
         <h1 class="display mt-5 text-[clamp(2.25rem,5.5vw,4.5rem)]">
           Best event equipment rentals
         </h1>
-        <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-muted-dark lg:text-lg">
+        <p class="mt-6 max-w-[46ch] text-base leading-relaxed text-muted-dark lg:text-lg">
           {page.metaDescription}
         </p>
         <div class="mt-9 flex flex-wrap items-center gap-5">
@@ -90,27 +172,8 @@ const serviceSchema = {
           </button>
           <a href={SITE.phoneHref} class="mono-label link-draw text-muted-dark">{SITE.phone} · 24/7</a>
         </div>
-        <ul class="mt-12 grid grid-cols-3 gap-px overflow-hidden border border-line-dark/60 bg-line-dark/60 text-center">
-          {[['3', 'Depot cities'], ['24/7', 'On-call technicians'], ['50', 'States served']].map(([n, label]) => (
-            <li class="bg-paper-dark px-3 py-4">
-              <p class="font-mono text-xl font-medium">{n}</p>
-              <p class="mono-label mt-1.5 text-muted-dark">{label}</p>
-            </li>
-          ))}
-        </ul>
+        <p class="mono-label mt-10 text-muted-dark">3 depot cities · 24/7 on-call technicians · 50 states served</p>
       </div>
-      {heroImage && (
-        <div class="reveal-img relative min-h-[280px] overflow-hidden lg:min-h-[420px]">
-          <img
-            src={heroImage}
-            alt={heroAlt}
-            class="absolute inset-0 h-full w-full object-cover"
-            width="960" height="640"
-            fetchpriority="high"
-          />
-          <p class="mono-label absolute bottom-4 left-4 bg-ink px-2.5 py-1.5 text-bg">Full-venue kit · One quote</p>
-        </div>
-      )}
     </div>
   </section>
 
@@ -124,7 +187,7 @@ const serviceSchema = {
 
   <!-- ============ VENUE ZONES ============ -->
   {zones.map((zone, i) => (
-    <section class={`border-b border-line ${i % 2 === 1 ? 'bg-surface/60' : ''}`}>
+    <section id={`zone-${zoneId(zone.label)}`} class={`scroll-mt-28 border-b border-line ${i % 2 === 1 ? 'bg-surface/60' : ''}`}>
       <div class="mx-auto max-w-[1440px] px-5 py-14 lg:px-10 lg:py-20">
         <div class={`grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16 ${i % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
           <div class="lg:[direction:ltr]">
@@ -197,3 +260,52 @@ const serviceSchema = {
     </div>
   </section>
 </Base>
+
+<style>
+  /* ---------- blueprint hero: grid paper, drawn plan, callouts ---------- */
+  .bp-grid {
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--color-line-dark) 55%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-line-dark) 55%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(120% 120% at 30% 40%, black 40%, transparent 100%);
+  }
+  .bp-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: bp-draw 1.1s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation-delay: var(--bp-delay, 250ms);
+  }
+  /* dashed rooms: dasharray is decorative, draw via opacity instead */
+  .bp-draw[stroke-dasharray='6 5'] {
+    stroke-dasharray: 6 5;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    animation: bp-appear 0.8s ease-out both;
+    animation-delay: var(--bp-delay, 250ms);
+  }
+  @keyframes bp-draw {
+    to { stroke-dashoffset: 0; }
+  }
+  .bp-fade,
+  .bp-fade-html,
+  .bp-callout {
+    opacity: 0;
+    animation: bp-appear 0.9s ease-out 0.9s both;
+  }
+  .bp-callout { animation-delay: 1.1s; }
+  @keyframes bp-appear {
+    to { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bp-draw,
+    .bp-draw[stroke-dasharray='6 5'],
+    .bp-fade,
+    .bp-fade-html,
+    .bp-callout {
+      animation: none;
+      opacity: 1;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
